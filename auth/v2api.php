@@ -1,7 +1,7 @@
 <?php //舍弃/创建草稿
 require '../utils/init.php';
 require '../utils/filters.php';
-$link = mysqli_connect('127.0.0.1','root','awsl') or die('数据库连接失败');
+$link = mysqli_connect('127.0.0.1','root','awsllswa') or die('数据库连接失败');
 
 if (isset($_POST['token'])&&($auth = token_authorize($_POST['token']))){
     if(($id = positive_int_filter($_POST['id']))&&($type = in_array_filter($_POST['type'],['article','note','anime','code','game','trivial']))){

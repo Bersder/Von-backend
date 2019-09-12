@@ -1,6 +1,6 @@
 <?php //归档页面使用
 require 'utils/init.php';
-$link = mysqli_connect('127.0.0.1','root','awsl') or die('数据库连接失败');
+$link = mysqli_connect('127.0.0.1','root','awsllswa') or die('数据库连接失败');
 $headerInfo = mysqli_fetch_assoc(maria($link,"select imgSrc,title,description from Page.header_area where type='archive' limit 1"));
 $noteNum = mysqli_fetch_row(maria($link,"select count(nid) from Note.note_info"))[0];
 $articles = [];$tags = [];

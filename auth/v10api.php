@@ -3,7 +3,7 @@ require '../utils/init.php';
 require '../utils/filters.php';
 $DISK_ROOT = $_SERVER['DOCUMENT_ROOT'];
 $key = 'DEEPDARKFANTASY1';
-$link = mysqli_connect('127.0.0.1', 'root', 'awsl') or die('数据库连接失败');
+$link = mysqli_connect('127.0.0.1', 'root', 'awsllswa') or die('数据库连接失败');
 if (isset($_POST['token']) && ($auth = token_authorize($_POST['token']))) {
     if (isset($_POST['encData'])&&isset($_POST['param'])){
         if($decrypted = openssl_decrypt(base64_decode($_POST['encData']),'aes-128-cbc',$key,OPENSSL_RAW_DATA,base64_decode($_POST['param']))){
@@ -30,20 +30,20 @@ if (isset($_POST['token']) && ($auth = token_authorize($_POST['token']))) {
             }
             //--------------------------------------↓系列的添加删除（需修改相关文章）
             elseif (isset($data['newSeries'])&&($newSeries=maria_str_notnull_filter($data['newSeries'],$link))){
-                if ($seriesExist = mysqli_fetch_row(maria($link,"select 1 from Series.series_link where seriesName=$newSeries limit 1"))[0]?1:0)
+                if ($seriesExist = mysqli_fetch_row(maria($link,"select 1 from Article.series_link where seriesName=$newSeries limit 1"))[0]?1:0)
                     echo json_encode(['code'=>0,'seriesExist'=>$seriesExist],JSON_NUMERIC_CHECK);
                 else{
-                    maria($link,"insert into Series.series_link(sid,seriesName) values (null,$newSeries)");
+                    maria($link,"insert into Article.series_link(sid,seriesName) values (null,$newSeries)");
                     $id = mysqli_insert_id($link);
                     echo json_encode(['code'=>0,'id'=>$id,'seriesExist'=>$seriesExist],JSON_NUMERIC_CHECK);
                 }
             }
             elseif (isset($data['delSeriesID'])&&($delSeriesID=positive_int_filter($data['delSeriesID']))){
-                $delSeries = mysqli_fetch_row(maria($link,"select seriesName from Series.series_link where sid=$delSeriesID limit 1"))[0];
+                $delSeries = mysqli_fetch_row(maria($link,"select seriesName from Article.series_link where sid=$delSeriesID limit 1"))[0];
                 $delSeries = maria_escape($delSeries,$link);
                 maria($link,"update Article.article_info set series=null where series=$delSeries");
                 maria($link,"update Article.article_info_tmp set series=null where series=$delSeries");
-                maria($link,"delete from Series.series_link where sid=$delSeriesID limit 1");
+                maria($link,"delete from Article.series_link where sid=$delSeriesID limit 1");
                 echo json_encode(['code'=>0]);
             }
             //--------------------------------------↓类别的添加删除（需修改相关笔记）
@@ -109,7 +109,7 @@ if (isset($_POST['token']) && ($auth = token_authorize($_POST['token']))) {
         $res = maria($link,"select tid as id,tagName,relateArt,relateNote from Tag.tag_cloud order by tagName asc limit 500");
         while ($each = mysqli_fetch_assoc($res))$tags[] = $each;
         $series = [];
-        $res = maria($link,"select sid as id,seriesName as name,relateArt from Series.series_link order by seriesName asc");
+        $res = maria($link,"select sid as id,seriesName as name,relateArt from Article.series_link order by seriesName asc");
         while ($each = mysqli_fetch_assoc($res))$series[] = $each;
         $category = [];
         $res = maria($link,"select cid as id,catName_en as nameEN,catName as nameCN,relateNote from Note.note_category order by catName asc ");

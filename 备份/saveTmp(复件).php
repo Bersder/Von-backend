@@ -1,7 +1,7 @@
 <?php
 header('Access-Control-Allow-Origin:*');
 header('content-type: application/json;charset=UTF-8');
-$link = mysqli_connect('127.0.0.1','root','awsl') or die('数据库连接失败');
+$link = mysqli_connect('127.0.0.1','root','awsllswa') or die('数据库连接失败');
 function maria($link,$sql){
     $res = mysqli_query($link,$sql);
     if(!$res){

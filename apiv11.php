@@ -1,6 +1,6 @@
 <?php //link页面获取链接
 require 'utils/init.php';
-$link = mysqli_connect('127.0.0.1','root','awsl') or die('数据库连接失败');
+$link = mysqli_connect('127.0.0.1','root','awsllswa') or die('数据库连接失败');
 $headerInfo = mysqli_fetch_assoc(maria($link,"select imgSrc,title,description from Page.header_area where type='link' limit 1"));
 $friendList = [];
 $res = maria($link,"select uname,avatar,message,ulink from User.user where isFriend=1");

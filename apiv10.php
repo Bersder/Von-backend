@@ -1,6 +1,6 @@
 <?php  //全站搜索，最多支持两个关键词
 require 'utils/init.php';
-$link = mysqli_connect('127.0.0.1','root','awsl') or die('数据库连接失败');
+$link = mysqli_connect('127.0.0.1','root','awsllswa') or die('数据库连接失败');
 if(isset($_GET['s'])&&$_GET['s']){
     $keys =  preg_replace('/\\s+/',' ',trim($_GET['s']));
     $keys = array_slice(explode(' ',$keys),0,2);

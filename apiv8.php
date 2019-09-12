@@ -1,6 +1,6 @@
 <?php //acg页面content-aside初始化
 require 'utils/init.php';
-$link = mysqli_connect('127.0.0.1','root','awsl') or die('数据库连接失败');
+$link = mysqli_connect('127.0.0.1','root','awsllswa') or die('数据库连接失败');
 if(isset($_GET['_'])&&in_array($_GET['_'],['anime','code','game',])){
     $type = mysqli_real_escape_string($link,$_GET['_']);
     $album = [];

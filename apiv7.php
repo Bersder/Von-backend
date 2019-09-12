@@ -1,7 +1,7 @@
 <?php  //评论发布接口
 require 'utils/init.php';
 require 'utils/filters.php';
-$link = mysqli_connect('127.0.0.1','root','awsl') or die('数据库连接失败');
+$link = mysqli_connect('127.0.0.1','root','awsllswa') or die('数据库连接失败');
 
 
 if(($topic_id = positive_int_filter($_POST['id']))&&($topic_type = in_array_filter($_POST['type'],['anime','code','game','trivial','note','link']))){

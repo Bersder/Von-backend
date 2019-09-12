@@ -1,7 +1,7 @@
 <?php
 require '../utils/init.php';
 require '../utils/filters.php';
-$link = mysqli_connect('127.0.0.1','root','awsl') or die('数据库连接失败');
+$link = mysqli_connect('127.0.0.1','root','awsllswa') or die('数据库连接失败');
 if (isset($_POST['token'])&&($auth = token_authorize($_POST['token']))){
     if(isset($_GET['aid'])){//存在aid，检验是否在tmp中，不存在就指导前端重指向
         if($aid=positive_int_filter($_GET['aid'])){
@@ -11,7 +11,7 @@ if (isset($_POST['token'])&&($auth = token_authorize($_POST['token']))){
                 $info['tags'] = $info['tags']==''?[]:explode(',',$info['tags']);
                 $res = maria($link,"select tagName from Tag.tag_cloud limit 500");$tagOptions = [];
                 while ($each = mysqli_fetch_assoc($res))$tagOptions[] = $each['tagName'];
-                $res = maria($link,"select seriesName from Series.series_link limit 50");$seriesOptions = [];
+                $res = maria($link,"select seriesName from Article.series_link limit 50");$seriesOptions = [];
                 while ($each = mysqli_fetch_assoc($res))$seriesOptions[] = $each['seriesName'];
                 echo json_encode(['info'=>$info,'rawContent'=>$content['rawContent'],'tagOptions'=>$tagOptions,'seriesOptions'=>$seriesOptions,'exist'=>$aid_exist]);
             }
@@ -28,7 +28,7 @@ if (isset($_POST['token'])&&($auth = token_authorize($_POST['token']))){
 //    maria($link,"insert into article_content (aid) values ($aid)");
         $res = maria($link,"select tagName from Tag.tag_cloud limit 500");$tagOptions = [];
         while ($each = mysqli_fetch_assoc($res))$tagOptions[] = $each['tagName'];
-        $res = maria($link,"select seriesName from Series.series_link limit 50");$seriesOptions = [];
+        $res = maria($link,"select seriesName from Article.series_link limit 50");$seriesOptions = [];
         while ($each = mysqli_fetch_assoc($res))$seriesOptions[] = $each['seriesName'];
         echo json_encode(['code'=>0,'tagOptions'=>$tagOptions,'seriesOptions'=>$seriesOptions,'aid'=>$aid]);
     }

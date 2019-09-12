@@ -1,6 +1,6 @@
 <?php //评论翻页接口
 require 'utils/init.php';
-$link = mysqli_connect('127.0.0.1','root','awsl') or die('数据库连接失败');
+$link = mysqli_connect('127.0.0.1','root','awsllswa') or die('数据库连接失败');
 
 function gen_replies(&$items){
     global $allReplies;

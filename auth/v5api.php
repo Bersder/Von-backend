@@ -1,7 +1,7 @@
 <?php //文章删除接口
 require '../utils/init.php';
 require '../utils/filters.php';
-$link = mysqli_connect('127.0.0.1','root','awsl') or die('数据库连接失败');
+$link = mysqli_connect('127.0.0.1','root','awsllswa') or die('数据库连接失败');
 $key = 'DEEPDARKFANTASY1';
 $DISK_ROOT = $_SERVER['DOCUMENT_ROOT'];
 if (isset($_POST['token'])&&($auth = token_authorize($_POST['token']))){
@@ -36,7 +36,7 @@ if (isset($_POST['token'])&&($auth = token_authorize($_POST['token']))){
                 $delInfo = mysqli_fetch_row(maria($link,"select series,tags,imgSrc from Article.article_info where aid=$id limit 1"));
                 if ($delSeries = $delInfo[0]){
                     $delSeries = mysqli_real_escape_string($link,$delSeries);//非空mysql比较需要转义
-                    maria($link,"update Series.series_link set relateArt=replace(relateArt,'$delTarget',',') where seriesName='$delSeries' limit 1");
+                    maria($link,"update Article.series_link set relateArt=replace(relateArt,'$delTarget',',') where seriesName='$delSeries' limit 1");
                 }//摸除系列
 
                 if ($delTags = $delInfo[1]){

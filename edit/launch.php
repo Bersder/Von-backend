@@ -1,7 +1,7 @@
 <?php
 require '../utils/init.php';
 require '../utils/filters.php';
-$link = mysqli_connect('127.0.0.1','root','awsl') or die('数据库连接失败');
+$link = mysqli_connect('127.0.0.1','root','awsllswa') or die('数据库连接失败');
 $DISK_ROOT = $_SERVER['DOCUMENT_ROOT'];
 
 function add_newTags($link){
@@ -46,7 +46,7 @@ if (isset($_POST['token'])&&($auth = token_authorize($_POST['token']))){
             if($isFirst){ //首次发布，往非tmp中插入新行、设置草稿备份,关联series，
                 maria($link,"insert into article_info  (aid, type, title, preview, imgSrc, author, time, lut,tags, series) values($aid,'$type','$title','$preview','$imgSrc','$author',now(),now(),'$escape_tags',$series)");
                 maria($link,"insert into article_content (aid, rawContent) values($aid,'$rawContent')");
-                if ($series!='null')maria($link,"update Series.series_link set relateArt=concat(relateArt,'$aid2') where seriesName=$series limit 1");
+                if ($series!='null')maria($link,"update Article.series_link set relateArt=concat(relateArt,'$aid2') where seriesName=$series limit 1");
                 maria($link,"update article_info_tmp set asbu=1,time=now() where aid=$aid limit 1");
                 //var_dump('first');
             }
@@ -64,10 +64,10 @@ if (isset($_POST['token'])&&($auth = token_authorize($_POST['token']))){
                 $oldSeries = $oldSeries?"'".mysqli_real_escape_string($link,$oldSeries)."'":'null';//转化为和series同等地位 转义str/'null'
                 if ($oldSeries!=$series){
                     if ($oldSeries!='null'){
-                        maria($link,"update Series.series_link set relateArt=replace(relateArt,'$oldTarget',',') where seriesName=$oldSeries limit 1");
+                        maria($link,"update Article.series_link set relateArt=replace(relateArt,'$oldTarget',',') where seriesName=$oldSeries limit 1");
                     }
                     if ($series!='null'){
-                        maria($link,"update Series.series_link set relateArt=concat(relateArt,'$aid2') where seriesName=$series limit 1");
+                        maria($link,"update Article.series_link set relateArt=concat(relateArt,'$aid2') where seriesName=$series limit 1");
                     }
                 }
                 $oldImg = mysqli_fetch_row(maria($link,"select imgSrc from article_info where aid=$aid limit 1"))[0];//旧图删除
