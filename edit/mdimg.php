@@ -26,9 +26,15 @@ if (isset($_POST['token'])&&($auth = token_authorize($_POST['token']))){
         $imgSrc = $path.'/'.$md5.$imgInfo[1];
         echo json_encode(['code'=>0,'imgSrc'=>$imgSrc]);
     }
-    else{//没接收到img
-        echo json_encode(['code'=>1,'imgSrc'=>'/site/images/fail.jpg']);
+    elseif(isset($_POST['delImg'])){
+        $delImg = $_POST['delImg'];
+        if (unlink($DISK_ROOT.$delImg))
+            echo json_encode(['code'=>0]);
+        else
+            echo json_encode(['code'=>1]);
     }
+    else
+        echo json_encode(['code'=>1,'imgSrc'=>'/site/static/nodata.png']);
 }
 else{
     http_response_code(401);

@@ -1,4 +1,4 @@
-<?php
+<?php //随机背景接口
 header('Access-Control-Allow-Origin:*');
 header('content-type: application/json;charset=UTF-8');
 $DISK_ROOT = $_SERVER['DOCUMENT_ROOT'];

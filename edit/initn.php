@@ -21,7 +21,7 @@ if (isset($_POST['token'])&&($auth = token_authorize($_POST['token']))){
 
     }
     else{ //新写文章，返回nid，并创建记录
-        maria($link,"insert into Note.note_info_tmp (nid,lut) values (null,now())");
+        maria($link,"insert into Note.note_info_tmp (nid,type,lut) values (null,'note',now())");
         $nid = mysqli_insert_id($link);
         maria($link,"insert into Note.note_content_tmp (nid) values ($nid)");
 //    maria($link,"insert into note_info (nid) values ($nid)");

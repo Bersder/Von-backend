@@ -29,11 +29,11 @@ if (isset($_POST['token']) && ($auth = token_authorize($_POST['token']))) {
                 echo json_encode(['code'=>0]);
             }
             //--------------------------------------↓系列的添加删除（需修改相关文章）
-            elseif (isset($data['newSeries'])&&($newSeries=maria_str_notnull_filter($data['newSeries'],$link))){
+            elseif (isset($data['newSeries'])&&($newSeries=maria_str_notnull_filter($data['newSeries'],$link))&&($newSeriesDes=maria_str_notnull_filter($data['newSeriesDes'],$link))){
                 if ($seriesExist = mysqli_fetch_row(maria($link,"select 1 from Article.series_link where seriesName=$newSeries limit 1"))[0]?1:0)
                     echo json_encode(['code'=>0,'seriesExist'=>$seriesExist],JSON_NUMERIC_CHECK);
                 else{
-                    maria($link,"insert into Article.series_link(sid,seriesName) values (null,$newSeries)");
+                    maria($link,"insert into Article.series_link(sid,seriesName,description) values (null,$newSeries,$newSeriesDes)");
                     $id = mysqli_insert_id($link);
                     echo json_encode(['code'=>0,'id'=>$id,'seriesExist'=>$seriesExist],JSON_NUMERIC_CHECK);
                 }

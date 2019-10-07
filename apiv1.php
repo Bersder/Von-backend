@@ -15,8 +15,9 @@ if(isset($_GET['_'])&&in_array($_GET['_'],['anime','code','game','trivial','note
         while($each =  mysqli_fetch_assoc($res))$catMap[$each['catName_en']] = $each['catName'];
         $res = maria($link,"select nid,title,preview,imgSrc,category,time,tags from Note.note_info where type is not null order by time desc limit 500");
         while($each =  mysqli_fetch_assoc($res))$notes[] = $each;
+        $notice = mysqli_fetch_row(maria($link,"select content from Page.notice where type='note' order by time desc limit 1"))[0];
 //        $notes['tags'] = explode(',',$notes['tags']);
-        echo json_encode(['code'=>0,'data'=>['catMap'=>$catMap,'notes'=>$notes,'headerInfo'=>$headerInfo]]);
+        echo json_encode(['code'=>0,'data'=>['catMap'=>$catMap,'notes'=>$notes,'headerInfo'=>$headerInfo,'notice'=>$notice]]);
     }
     elseif ($_GET['_']=='trivial'){
         $artsNew=[];$artsHot=[];$artNum=0;

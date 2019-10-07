@@ -20,7 +20,7 @@ else{
     $arts = [];
     $res = maria($link,"select aid,title,preview,imgSrc,commentCount,readCount,time,type from Article.article_info order by time desc limit 8");
     while ($each = mysqli_fetch_assoc($res))$arts[] = $each;
-    $artNum = mysqli_fetch_row(maria($link,"select count(aid) as count from Article.article_info"))[0]||0;
+    $artNum = mysqli_fetch_row(maria($link,"select count(aid) as count from Article.article_info"))[0];
     $topped = [];
     $res = maria($link,"select aid,title,preview,imgSrc,type from Article.article_info where topped=1 limit 500");
     while ($each = mysqli_fetch_assoc($res))$topped[] = $each;
