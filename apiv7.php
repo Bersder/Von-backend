@@ -29,7 +29,7 @@ if (isset($_POST['puzzle'])&&($ass=base64_decode($_POST['puzzle']))){
                     maria($link,"insert into Comment.comment (parent_id, topic_id, topic_type, content, uid, to_uid, notify, datetime) values ($parent_id,$topic_id,'$topic_type','$content',$uid,$to_uid,$notify,now())");
                     if ($topic_type=='note')//评论计数
                         maria($link,"update Note.note_info set commentCount=commentCount+1 where nid=$topic_id limit 1");
-                    else
+                    else if ($topic_type!='link')
                         maria($link,"update Article.article_info set commentCount=commentCount+1 where aid=$topic_id limit 1");
                     if($parent_id!='null'){//回复提醒
                         $notify_target = mysqli_fetch_assoc(maria($link,"select uname,email,notify from Comment.comment as c,User.user as u where c.id=$parent_id and c.uid=u.id limit 1"));
