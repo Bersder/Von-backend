@@ -27,6 +27,11 @@ if (isset($_POST['token'])&&($auth = token_authorize($_POST['token']))){
         $counts = [];
         $res = maria($link,"select type,count(id) as count from Page.album group by type");
         while ($each=mysqli_fetch_row($res))$counts[$each[0]] = $each[1];
+        $sum = 0;
+        foreach ($counts as $key => $item){
+            $sum += $item;
+        }
+        $counts['all'] = $sum;
         $pictures = [];
         $res =  maria($link,"select id,imgSrc,description,time from Page.album order by time desc limit 20");
         while ($each=mysqli_fetch_assoc($res))$pictures[] = $each;
