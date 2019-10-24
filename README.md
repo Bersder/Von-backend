@@ -61,3 +61,5 @@ back-end of nameless-blog
 - [X] mdimg：新增图片删除接口
 ### log02 
 - [X] apiv6&apiv7：评论表去冗余(去除uname,ulink,avatar,to_uname)，原评论表结构保存为bak
+
+### log03 **(数据库重构前保存)**
