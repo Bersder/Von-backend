@@ -29,7 +29,7 @@ if (isset($_POST['token'])&&($auth = token_authorize($_POST['token']))){
             $author = mysqli_real_escape_string($link,$_POST['author']);
             $preview = mysqli_real_escape_string($link,$_POST['preview']);
             $rawContent = mysqli_real_escape_string($link,$_POST['rawContent']);
-            $series = maria_strORnull_filter($_POST['series'],$link);
+            $seriesID = maria_strORnull_filter($_POST['seriesID'],$link);
             $title = mysqli_real_escape_string($link,$_POST['title']);
 
             $tags = add_newTags($link);//非转义过的
@@ -43,10 +43,9 @@ if (isset($_POST['token'])&&($auth = token_authorize($_POST['token']))){
 
 
             //然后录入文章信息
-            if($isFirst){ //首次发布，往非tmp中插入新行、设置草稿备份,关联series，
-                maria($link,"insert into article_info  (aid, type, title, preview, imgSrc, author, time, lut,tags, series) values($aid,'$type','$title','$preview','$imgSrc','$author',now(),now(),'$escape_tags',$series)");
+            if($isFirst){ //首次发布，往非tmp中插入新行、设置草稿备份
+                maria($link,"insert into article_info  (aid, type, title, preview, imgSrc, author, time, lut,tags, seriesID) values($aid,'$type','$title','$preview','$imgSrc','$author',now(),now(),'$escape_tags',$seriesID)");
                 maria($link,"insert into article_content (aid, rawContent) values($aid,'$rawContent')");
-                if ($series!='null')maria($link,"update Article.series_link set relateArt=concat(relateArt,'$aid2') where seriesName=$series limit 1");
                 maria($link,"update article_info_tmp set asbu=1,time=now() where aid=$aid limit 1");
                 //var_dump('first');
             }
@@ -55,32 +54,20 @@ if (isset($_POST['token'])&&($auth = token_authorize($_POST['token']))){
                 $oldTags = explode(',',mysqli_fetch_row(maria($link,"select tags from article_info where aid=$aid limit 1"))[0]);
                 $deleteTags = array_diff($oldTags,explode(',',$tags));
                 foreach ($deleteTags as $value){ //标签删除，和数据库比较取得被删除的标签，然后删除对应标签下的id
-//               $ad =  preg_replace('/,'.$aid.',/',',',mysqli_fetch_row(maria($link,"select relateArt from Tag.tag_cloud where tagName='$value' limit 1"))[0]);
-//               maria($link,"update Tag.tag_cloud set relateArt='$ad' where tagName='$value' limit 1");
                     $escape_value = mysqli_real_escape_string($link,$value);
                     maria($link,"update Tag.tag_cloud set relateArt=replace(relateArt,'$oldTarget',',') where tagName='$escape_value' limit 1");
-                }
-                $oldSeries = mysqli_fetch_row(maria($link,"select series from article_info where aid=$aid limit 1"))[0];//NULL/str
-                $oldSeries = $oldSeries?"'".mysqli_real_escape_string($link,$oldSeries)."'":'null';//转化为和series同等地位 转义str/'null'
-                if ($oldSeries!=$series){
-                    if ($oldSeries!='null'){
-                        maria($link,"update Article.series_link set relateArt=replace(relateArt,'$oldTarget',',') where seriesName=$oldSeries limit 1");
-                    }
-                    if ($series!='null'){
-                        maria($link,"update Article.series_link set relateArt=concat(relateArt,'$aid2') where seriesName=$series limit 1");
-                    }
                 }
                 $oldImg = mysqli_fetch_row(maria($link,"select imgSrc from article_info where aid=$aid limit 1"))[0];//旧图删除
                 if($oldImg!=$imgSrc){
                     unlink($DISK_ROOT.$oldImg);
                     @unlink($DISK_ROOT.$oldImg.'.thumb');
                 }//避免同名不同格式
-                maria($link,"update article_info set author='$author',imgSrc='$imgSrc',preview='$preview',series=$series,tags='$escape_tags',title='$title',type='$type',lut=now() where aid=$aid limit 1");
+                maria($link,"update article_info set author='$author',imgSrc='$imgSrc',preview='$preview',seriesID=$seriesID,tags='$escape_tags',title='$title',type='$type',lut=now() where aid=$aid limit 1");
                 maria($link,"update article_content set rawContent='$rawContent' where aid=$aid limit 1");
                 //var_dump('second');
             }
             //草稿跟随发布更新，并取消草稿
-            maria($link,"update article_info_tmp set author='$author',imgSrc='$imgSrc',preview='$preview',series=$series,tags='$escape_tags',inputTags='',title='$title',type='$type',lut=now(),asdraft=0 where aid=$aid limit 1");
+            maria($link,"update article_info_tmp set author='$author',imgSrc='$imgSrc',preview='$preview',seriesID=$seriesID,tags='$escape_tags',inputTags='',title='$title',type='$type',lut=now(),asdraft=0 where aid=$aid limit 1");
             maria($link,"update article_content_tmp set rawContent='$rawContent'where aid=$aid limit 1");
             echo json_encode(['code'=>0]);
         }

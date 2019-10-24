@@ -12,7 +12,11 @@ if(isset($_GET['_'])&&in_array($_GET['_'],['anime','code','game',])){
     }
     if ($type=='code'){
         $seriesList = [];
-        $res = maria($link,"select series as name,count(aid) as count from Article.article_info where series is not null group by series");
+        $res = maria($link,"
+        select seriesName as name,count
+        from (select seriesID,count(*) as count from Article.article_info where seriesID is not null group by seriesID) as tmp left join Article.series_link as sl 
+        on tmp.seriesID=sl.sid;
+        ");
         while ($each = mysqli_fetch_assoc($res))$seriesList[] = $each;
         echo json_encode(['code'=>0,'data'=>['album'=>$album,'gossip'=>$gossip,'seriesList'=>$seriesList,'headerInfo'=>$headerInfo]]);
 

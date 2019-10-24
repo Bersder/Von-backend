@@ -7,11 +7,11 @@ if (isset($_POST['token'])&&($auth = token_authorize($_POST['token']))){
         $author = maria_escape($_POST['author'],$link) ;
         $preview = maria_escape($_POST['preview'],$link) ;
         $rawContent = maria_escape($_POST['rawContent'],$link) ;
-        $series = maria_strORnull_filter($_POST['series'],$link);
+        $seriesID = maria_strORnull_filter($_POST['seriesID'],$link);
         $tags = maria_escape($_POST['tags'],$link) ;
         $inputTags = maria_escape($_POST['inputTags'],$link) ;
         $title = maria_escape($_POST['title'],$link) ;
-        maria($link,"update Article.article_info_tmp set author=$author,preview=$preview,series=$series,tags=$tags,inputTags=$inputTags,title=$title,type='$type',lut=now() where aid=$aid limit 1");
+        maria($link,"update Article.article_info_tmp set author=$author,preview=$preview,seriesID=$seriesID,tags=$tags,inputTags=$inputTags,title=$title,type='$type',lut=now() where aid=$aid limit 1");
         maria($link,"update Article.article_content_tmp set rawContent=$rawContent where aid=$aid limit 1");
         echo json_encode(['code'=>0]);
     }

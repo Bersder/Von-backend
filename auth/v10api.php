@@ -39,10 +39,8 @@ if (isset($_POST['token']) && ($auth = token_authorize($_POST['token']))) {
                 }
             }
             elseif (isset($data['delSeriesID'])&&($delSeriesID=positive_int_filter($data['delSeriesID']))){
-                $delSeries = mysqli_fetch_row(maria($link,"select seriesName from Article.series_link where sid=$delSeriesID limit 1"))[0];
-                $delSeries = maria_escape($delSeries,$link);
-                maria($link,"update Article.article_info set series=null where series=$delSeries");
-                maria($link,"update Article.article_info_tmp set series=null where series=$delSeries");
+                maria($link,"update Article.article_info set seriesID=null where seriesID=$delSeriesID");
+                maria($link,"update Article.article_info_tmp set seriesID=null where seriesID=$delSeriesID");
                 maria($link,"delete from Article.series_link where sid=$delSeriesID limit 1");
                 echo json_encode(['code'=>0]);
             }
@@ -108,9 +106,20 @@ if (isset($_POST['token']) && ($auth = token_authorize($_POST['token']))) {
         $tags = [];
         $res = maria($link,"select tid as id,tagName,relateArt,relateNote from Tag.tag_cloud order by tagName asc limit 500");
         while ($each = mysqli_fetch_assoc($res))$tags[] = $each;
-        $series = [];
-        $res = maria($link,"select sid as id,seriesName as name,relateArt from Article.series_link order by seriesName asc");
-        while ($each = mysqli_fetch_assoc($res))$series[] = $each;
+
+        $seriesList = [];//系列关联文章计数
+        $res = maria($link,"
+        select sid as id,seriesName as name,count
+        from (select seriesID,count(*) as count from Article.article_info where seriesID is not null group by seriesID) as tmp left join Article.series_link as sl 
+        on tmp.seriesID=sl.sid
+        union 
+        select sid as id,seriesName as name,0 as count
+        from Article.series_link
+        where sid not in (select distinct seriesID from Article.article_info where seriesID is not null)
+        ");
+        while ($each = mysqli_fetch_assoc($res))$seriesList[] = $each;
+        array_multisort(array_column($seriesList,'name'),SORT_ASC,$seriesList);//按系列名升序排序
+
         $category = [];
         $res = maria($link,"select cid as id,catName_en as nameEN,catName as nameCN,relateNote from Note.note_category order by catName asc ");
         while ($each = mysqli_fetch_assoc($res))$category[] = $each;
@@ -127,7 +136,7 @@ if (isset($_POST['token']) && ($auth = token_authorize($_POST['token']))) {
                 $outerLinks[$each['type']][] = $each;
             }
         }
-        echo json_encode(['code'=>0,'data'=>['tags'=>$tags,'series'=>$series,'category'=>$category,'headers'=>$headers,'outerLinks'=>$outerLinks]],JSON_NUMERIC_CHECK);
+        echo json_encode(['code'=>0,'data'=>['tags'=>$tags,'seriesList'=>$seriesList,'category'=>$category,'headers'=>$headers,'outerLinks'=>$outerLinks]],JSON_NUMERIC_CHECK);
     }
 } else {
     http_response_code(401);

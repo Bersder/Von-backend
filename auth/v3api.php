@@ -5,7 +5,11 @@ $link = mysqli_connect('127.0.0.1','root','awsllswa') or die('数据库连接失
 if (isset($_POST['token'])&&($auth = token_authorize($_POST['token']))){
     $articles=[];
     $notes = [];
-    $res = maria($link,"select aid as id,type,title,series,readCount,commentCount,time,lut,topped from Article.article_info order by time desc");
+    $res = maria($link,"
+    select aid as id,type,title,seriesName as series,readCount,commentCount,time,lut,topped
+    from Article.article_info left join Article.series_link on seriesID=sid
+    order by time desc;
+    ");
     while ($each = mysqli_fetch_assoc($res))$articles[] = $each;
     $res = maria($link,"select nid as id,type,title,readCount,commentCount,time,lut from Note.note_info order by time desc");
     while ($each = mysqli_fetch_assoc($res))$notes[] = $each;

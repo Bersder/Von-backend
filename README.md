@@ -51,6 +51,8 @@ back-end of nameless-blog
 | apiv13 | 随机背景接口  | No Table | 
 | apiv14 | 系列页面接口  | S:series_link/ai | 
 
+## 重要保存点
+- 2019-10-24 a0eaedc 数据库重构前保存
 ## Log
 修复&新增,(SP为重要保存点)
 ### log01 **(SP评论表去冗余前)**
@@ -62,4 +64,5 @@ back-end of nameless-blog
 ### log02 
 - [X] apiv6&apiv7：评论表去冗余(去除uname,ulink,avatar,to_uname)，原评论表结构保存为bak
 
-### log03 **(数据库重构前保存)**
+### log03 **(SP数据库（文章系列相关）重组完成)**
+- [X] 数据库（文章系列相关）重组完成

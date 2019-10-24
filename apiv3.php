@@ -21,7 +21,12 @@ if(isset($_GET['_'])&&in_array($_GET['_'],['a','c','g','t','n'])){
     elseif(preg_match('/^[1-9]\\d*$/',$_GET['xid'])){
         $aid = $_GET['xid'];
         maria($link, "update Article.article_info set readCount=readCount+1 where aid=$aid limit 1");
-        if($info = mysqli_fetch_assoc(maria($link,"select title,preview,imgSrc,author,time,lut,tags,series,commentCount,readCount,liked from Article.article_info where aid=$aid limit 1"))){
+        if($info = mysqli_fetch_assoc(maria($link,"
+        select title,preview,imgSrc,author,time,lut,tags,seriesName as series,commentCount,readCount,liked
+        from Article.article_info left join Article.series_link on seriesID=sid
+        where aid=$aid
+        limit 1;
+        "))){
             $info['tags'] = $info['tags']==''?[]:explode(',',$info['tags']);
             $rawContent = mysqli_fetch_row(maria($link,"select rawContent from Article.article_content where aid=$aid limit 1"))[0];
             $curTime = $info['time'];

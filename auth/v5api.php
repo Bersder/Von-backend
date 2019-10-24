@@ -33,13 +33,8 @@ if (isset($_POST['token'])&&($auth = token_authorize($_POST['token']))){
                 echo json_encode(['code'=>0]);
             }
             else{
-                $delInfo = mysqli_fetch_row(maria($link,"select series,tags,imgSrc from Article.article_info where aid=$id limit 1"));
-                if ($delSeries = $delInfo[0]){
-                    $delSeries = mysqli_real_escape_string($link,$delSeries);//非空mysql比较需要转义
-                    maria($link,"update Article.series_link set relateArt=replace(relateArt,'$delTarget',',') where seriesName='$delSeries' limit 1");
-                }//摸除系列
-
-                if ($delTags = $delInfo[1]){
+                $delInfo = mysqli_fetch_row(maria($link,"select tags,imgSrc from Article.article_info where aid=$id limit 1"));
+                if ($delTags = $delInfo[0]){
                     $delTags = explode(',',$delTags);
                     foreach ($delTags as $value){
                         $escape_value = mysqli_real_escape_string($link, $value);
@@ -49,7 +44,7 @@ if (isset($_POST['token'])&&($auth = token_authorize($_POST['token']))){
                 }
                 //摸除评论
                 maria($link,"delete from Comment.comment where topic_id=$id and topic_type='$type'");
-                unlink($DISK_ROOT.$delInfo[2]);
+                unlink($DISK_ROOT.$delInfo[1]);
                 //摸除备份
                 maria($link,"delete from Article.article_info_tmp where aid=$id limit 1");
                 maria($link,"delete from Article.article_content_tmp where aid=$id limit 1");
