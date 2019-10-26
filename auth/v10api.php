@@ -55,10 +55,8 @@ if (isset($_POST['token']) && ($auth = token_authorize($_POST['token']))) {
                 }
             }
             elseif (isset($data['delCatID'])&&($delCatID=positive_int_filter($data['delCatID']))){
-                $delCat = mysqli_fetch_row(maria($link,"select catName_en from Note.note_category where cid=$delCatID limit 1"))[0];
-                $delCat = maria_escape($delCat,$link);
-                maria($link,"update Note.note_info set category='zatsu' where category=$delCat");
-                maria($link,"update Note.note_info_tmp set category='zatsu' where category=$delCat");
+                maria($link,"update Note.note_info set catID=1 where catID=$delCatID");
+                maria($link,"update Note.note_info_tmp set catID=1 where catID=$delCatID");
                 maria($link,"delete from Note.note_category where cid=$delCatID limit 1");
                 echo json_encode(['code'=>0]);
             }
@@ -120,9 +118,19 @@ if (isset($_POST['token']) && ($auth = token_authorize($_POST['token']))) {
         while ($each = mysqli_fetch_assoc($res))$seriesList[] = $each;
         array_multisort(array_column($seriesList,'name'),SORT_ASC,$seriesList);//按系列名升序排序
 
-        $category = [];
-        $res = maria($link,"select cid as id,catName_en as nameEN,catName as nameCN,relateNote from Note.note_category order by catName asc ");
-        while ($each = mysqli_fetch_assoc($res))$category[] = $each;
+        $categoryList = [];
+        $res = maria($link,"
+        select cid as id,catName as nameCN,catName_en as nameEN,count
+        from (select catID,count(*) as count from Note.note_info where catID>1 group by catID) as tmp left join Note.note_category as nc
+        on tmp.catID=nc.cid
+        union 
+        select cid as id,catName as nameCN,catName_en as nameEN,0 as count
+        from Note.note_category
+        where cid>1 and cid not in (select distinct catID from Note.note_info)
+        ");
+        while ($each = mysqli_fetch_assoc($res))$categoryList[] = $each;
+        array_multisort(array_column($categoryList,'nameCN'),SORT_ASC,$categoryList);//按分类名升序排序
+
         $headers = [];
         $res = maria($link,"select * from Page.header_area order by id asc");
         while ($each = mysqli_fetch_assoc($res))$headers[] = $each;
@@ -136,7 +144,7 @@ if (isset($_POST['token']) && ($auth = token_authorize($_POST['token']))) {
                 $outerLinks[$each['type']][] = $each;
             }
         }
-        echo json_encode(['code'=>0,'data'=>['tags'=>$tags,'seriesList'=>$seriesList,'category'=>$category,'headers'=>$headers,'outerLinks'=>$outerLinks]],JSON_NUMERIC_CHECK);
+        echo json_encode(['code'=>0,'data'=>['tags'=>$tags,'seriesList'=>$seriesList,'categoryList'=>$categoryList,'headers'=>$headers,'outerLinks'=>$outerLinks]],JSON_NUMERIC_CHECK);
     }
 } else {
     http_response_code(401);

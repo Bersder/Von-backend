@@ -15,15 +15,14 @@ if (isset($_POST['token'])&&($auth = token_authorize($_POST['token']))){
         maria($link,"update Article.article_content_tmp set rawContent=$rawContent where aid=$aid limit 1");
         echo json_encode(['code'=>0]);
     }
-    elseif(isset($_GET['nid'])&&$_POST['type']==='note'&&($nid=positive_int_filter($_GET['nid']))){
+    elseif(isset($_GET['nid'])&&$_POST['type']==='note'&&($nid=positive_int_filter($_GET['nid']))&&($catID=positive_int_filter($_POST['categoryID']))){
         $author = maria_escape($_POST['author'],$link) ;
         $preview = maria_escape($_POST['preview'],$link) ;
         $rawContent = maria_escape($_POST['rawContent'],$link) ;
-        $category = maria_escape($_POST['category'],$link) ;
         $tags = maria_escape($_POST['tags'],$link) ;
         $inputTags = maria_escape($_POST['inputTags'],$link) ;
         $title = maria_escape($_POST['title'],$link) ;
-        maria($link,"update Note.note_info_tmp set author=$author,preview=$preview,category=$category,tags=$tags,inputTags=$inputTags,title=$title,type='note',lut=now() where nid=$nid limit 1");
+        maria($link,"update Note.note_info_tmp set author=$author,preview=$preview,catID=$catID,tags=$tags,inputTags=$inputTags,title=$title,type='note',lut=now() where nid=$nid limit 1");
         maria($link,"update Note.note_content_tmp set rawContent=$rawContent where nid=$nid limit 1");
         echo json_encode(['code'=>0]);
     }

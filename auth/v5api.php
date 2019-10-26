@@ -14,10 +14,8 @@ if (isset($_POST['token'])&&($auth = token_authorize($_POST['token']))){
             $type = $data['type'];
             $delTarget = ','.$id.',';
             if ($type==='note'){
-                $delInfo = mysqli_fetch_row(maria($link,"select category,tags,imgSrc from Note.note_info where nid=$id limit 1"));
-                if ($delCat = mysqli_real_escape_string($link,$delInfo[0]))//非空mysql比较需要转义
-                    maria($link,"update Note.note_category set relateNote=replace(relateNote,'$delTarget',',') where catName_en='$delCat' limit 1");
-                if ($delTags = $delInfo[1]){
+                $delInfo = mysqli_fetch_row(maria($link,"select tags,imgSrc from Note.note_info where nid=$id limit 1"));
+                if ($delTags = $delInfo[0]){
                     $delTags = explode(',', $delTags);
                     foreach ($delTags as $value){
                         $escape_value = mysqli_real_escape_string($link, $value);
@@ -25,7 +23,7 @@ if (isset($_POST['token'])&&($auth = token_authorize($_POST['token']))){
                     }
                 }
                 maria($link,"delete from Comment.comment where topic_id=$id and topic_type='$type'");
-                unlink($DISK_ROOT.$delInfo[2]);
+                unlink($DISK_ROOT.$delInfo[1]);
                 maria($link,"delete from Note.note_info_tmp where nid=$id limit 1");
                 maria($link,"delete from Note.note_content_tmp where nid=$id limit 1");
                 maria($link,"delete from Note.note_info where nid=$id limit 1");

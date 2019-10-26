@@ -4,19 +4,23 @@ $link = mysqli_connect('127.0.0.1','root','awsllswa') or die('数据库连接失
 
 if(isset($_GET['_'])&&in_array($_GET['_'],['anime','code','game','trivial','note'])){
     if($_GET['_']=='note'){
-//        $catCount = [];
         $catMap = [];$notes = [];
-//        $catCount['all'] = mysqli_fetch_row(maria($link,"select count(type) from Note.note_info"))[0];
-//        $catMap['all'] = '所有';
-//        $res = maria($link,"select category,count(nid) as count from (select * from Note.note_info where type is not null) as son group by category");
-//        while($each =  mysqli_fetch_assoc($res))$catCount[$each['category']] = $each['count'];
         $headerInfo = mysqli_fetch_assoc(maria($link,"select imgSrc,title,description from Page.header_area where type='note' limit 1"));
-        $res = maria($link,"select catName_en,catName from Note.note_category limit 100");
-        while($each =  mysqli_fetch_assoc($res))$catMap[$each['catName_en']] = $each['catName'];
-        $res = maria($link,"select nid,title,preview,imgSrc,category,time,tags from Note.note_info where type is not null order by time desc limit 500");
+        $res = maria($link,"
+        select cid,catName,catName_en
+        from Note.note_category
+        where cid in (select distinct catID from Note.note_info)
+        ");
+        while($each =  mysqli_fetch_assoc($res))$catMap[$each['cid']] = ['catName'=>$each['catName'],'catName_en'=>$each['catName_en']];
+
+        $res = maria($link,"
+        select nid,title,preview,imgSrc,catID,catName,catName_en,time,tags
+        from Note.note_info as ni,Note.note_category as nc
+        where ni.catID=nc.cid
+        order by time desc
+        ");
         while($each =  mysqli_fetch_assoc($res))$notes[] = $each;
         $notice = mysqli_fetch_row(maria($link,"select content from Page.notice where type='note' order by time desc limit 1"))[0];
-//        $notes['tags'] = explode(',',$notes['tags']);
         echo json_encode(['code'=>0,'data'=>['catMap'=>$catMap,'notes'=>$notes,'headerInfo'=>$headerInfo,'notice'=>$notice]]);
     }
     elseif ($_GET['_']=='trivial'){

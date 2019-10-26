@@ -74,7 +74,7 @@ if (isset($_POST['token'])&&($auth = token_authorize($_POST['token']))){
     }
     elseif(isset($_GET['nid'])&&$_POST['type']=='note'){
         maria($link,'use Note');
-        if($nid=positive_int_filter($_GET['nid'])){
+        if(($nid=positive_int_filter($_GET['nid']))&&($catID=positive_int_filter($_POST['categoryID']))){
             $type = 'note';
             $nid2 = $nid.',';
             $isFirst = !(mysqli_fetch_row(maria($link,"select 1 from note_info where nid=$nid limit 1"))[0]);
@@ -83,7 +83,6 @@ if (isset($_POST['token'])&&($auth = token_authorize($_POST['token']))){
             $author = mysqli_real_escape_string($link,$_POST['author']);
             $preview = mysqli_real_escape_string($link,$_POST['preview']);
             $rawContent = mysqli_real_escape_string($link,$_POST['rawContent']);
-            $category = mysqli_real_escape_string($link,$_POST['category']);
             $title = mysqli_real_escape_string($link,$_POST['title']);
 
             $tags = add_newTags($link); //非转义的
@@ -95,9 +94,8 @@ if (isset($_POST['token'])&&($auth = token_authorize($_POST['token']))){
             $escape_tags = mysqli_real_escape_string($link,$tags);
 
             if($isFirst){
-                maria($link,"insert into note_info (nid, type, title, preview, imgSrc, author, time, lut, tags, category) values ($nid,'note','$title','$preview','$imgSrc','$author',now(),now(),'$escape_tags','$category')");
+                maria($link,"insert into note_info (nid, type, title, preview, imgSrc, author, time, lut, tags, catID) values ($nid,'note','$title','$preview','$imgSrc','$author',now(),now(),'$escape_tags',$catID)");
                 maria($link,"insert into note_content (nid, rawContent) values ($nid,'$rawContent')");
-                maria($link,"update note_category set relateNote=concat(relateNote,'$nid2') where catName_en='$category' limit 1");
                 maria($link,"update note_info_tmp set asbu=1,time=now() where nid=$nid limit 1");
                 //var_dump('first');
             }
@@ -106,28 +104,20 @@ if (isset($_POST['token'])&&($auth = token_authorize($_POST['token']))){
                 $oldTags = explode(',',mysqli_fetch_row(maria($link,"select tags from note_info where nid=$nid limit 1"))[0]);
                 $deleteTags = array_diff($oldTags,explode(',',$tags));
                 foreach ($deleteTags as $value){ //标签删除，和数据库比较取得被删除的标签，然后删除对应标签下的id
-//                $ad =  preg_replace('/,'.$nid.',/',',',mysqli_fetch_row(maria($link,"select relateNote from Tag.tag_cloud where tagName='$value' limit 1"))[0]);
-//                maria($link,"update Tag.tag_cloud set relateNote='$ad' where tagName='$value' limit 1");
                     $escape_value = mysqli_real_escape_string($link,$value);
                     maria($link,"update Tag.tag_cloud set relateNote=replace(relateNote,'$oldTarget',',') where tagName='$escape_value' limit 1");
-                }
-                $oldCat = mysqli_fetch_row(maria($link,"select category from note_info where nid=$nid limit 1"))[0];
-                if ($oldCat != $_POST['category']) {
-                    $escape_oldCat = mysqli_real_escape_string($link,$oldCat);
-                    maria($link,"update note_category set relateNote=replace(relateNote,'$oldTarget',',') where catName_en='$escape_oldCat' limit 1");
-                    maria($link,"update note_category set relateNote=concat(relateNote,'$nid2') where catName_en='$category' limit 1");
                 }
                 $oldImg = mysqli_fetch_row(maria($link,"select imgSrc from note_info where nid=$nid limit 1"))[0];//旧图删除
                 if($oldImg!=$imgSrc){
                     unlink($DISK_ROOT.$oldImg);
                     @unlink($DISK_ROOT.$oldImg.'.thumb');
                 }
-                maria($link,"update note_info set author='$author',imgSrc='$imgSrc',preview='$preview',category='$category',tags='$escape_tags',title='$title',type='$type',lut=now() where nid=$nid limit 1");
+                maria($link,"update note_info set author='$author',imgSrc='$imgSrc',preview='$preview',catID=$catID,tags='$escape_tags',title='$title',type='$type',lut=now() where nid=$nid limit 1");
                 maria($link,"update note_content set rawContent='$rawContent' where nid=$nid limit 1");
                 //var_dump('second');
             }
 
-            maria($link,"update note_info_tmp set author='$author',imgSrc='$imgSrc',preview='$preview',category='$category',tags='$escape_tags',inputTags='',title='$title',type='$type',lut=now(),asdraft=0 where nid=$nid limit 1");
+            maria($link,"update note_info_tmp set author='$author',imgSrc='$imgSrc',preview='$preview',catID=$catID,tags='$escape_tags',inputTags='',title='$title',type='$type',lut=now(),asdraft=0 where nid=$nid limit 1");
             maria($link,"update note_content_tmp set rawContent='$rawContent'where nid=$nid limit 1");
             echo json_encode(['code'=>0]);
         }
