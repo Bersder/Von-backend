@@ -7,19 +7,25 @@ if (isset($_POST['token'])&&($auth = token_authorize($_POST['token']))){
         if($nid=positive_int_filter($_GET['nid'])){
             if ($nid_exist = mysqli_fetch_row(maria($link,"select 1 from Note.note_info_tmp where nid=$nid and asdraft=1 limit 1"))[0]){
                 $info = mysqli_fetch_assoc(maria($link,"
-                select title,preview,catName as category,cid as categoryID,tags,inputTags,imgSrc
+                select title,preview,catName as category,cid as categoryID,inputTags,imgSrc
                 from Note.note_info_tmp left join Note.note_category on catID=cid
                 where nid=$nid
                 limit 1
                 "));
                 $content = mysqli_fetch_assoc(maria($link,"select rawContent from Note.note_content_tmp where nid=$nid limit 1"));
-                $info['tags'] = $info['tags']==''?[]:explode(',',$info['tags']);
-                $res = maria($link,"select tagName from Tag.tag_cloud limit 500");$tagOptions = [];
-                while ($each = mysqli_fetch_assoc($res))$tagOptions[] = $each['tagName'];
+
+                $tagsID = mysqli_fetch_row(maria($link,"select group_concat(tid) as tagsID from Tag.tm_tc_tmp where xid=$nid and type='note'"))[0];
+                $tagsID = $tagsID?explode(',',$tagsID):[];
+                $info['tagsID'] = $tagsID;
+
+                $tagMap = [];
+                $res = maria($link,"select tid,tagName from Tag.tag_cloud");
+                while ($each = mysqli_fetch_assoc($res))$tagMap[$each['tid']] = $each['tagName'];
+
                 $catOptions = [];
                 $res = maria($link,"select cid,catName from Note.note_category");
                 while ($each = mysqli_fetch_assoc($res))$catOptions[] = $each;
-                echo json_encode(['info'=>$info,'rawContent'=>$content['rawContent'],'tagOptions'=>$tagOptions,'catOptions'=>$catOptions,'exist'=>$nid_exist]);
+                echo json_encode(['info'=>$info,'rawContent'=>$content['rawContent'],'tagMap'=>$tagMap,'catOptions'=>$catOptions,'exist'=>$nid_exist]);
             }
             else
                 echo json_encode(['exist'=>$nid_exist]);
@@ -30,14 +36,15 @@ if (isset($_POST['token'])&&($auth = token_authorize($_POST['token']))){
         maria($link,"insert into Note.note_info_tmp (nid,type,lut) values (null,'note',now())");
         $nid = mysqli_insert_id($link);
         maria($link,"insert into Note.note_content_tmp (nid) values ($nid)");
-//    maria($link,"insert into note_info (nid) values ($nid)");
-//    maria($link,"insert into note_content (nid) values ($nid)");
-        $res = maria($link,"select tagName from Tag.tag_cloud limit 500");$tagOptions = [];
-        while ($each = mysqli_fetch_assoc($res))$tagOptions[] = $each['tagName'];
+
+        $tagMap = [];
+        $res = maria($link,"select tid,tagName from Tag.tag_cloud");
+        while ($each = mysqli_fetch_assoc($res))$tagMap[$each['tid']] = $each['tagName'];
+
         $catOptions = [];
         $res = maria($link,"select cid,catName from Note.note_category");
         while ($each = mysqli_fetch_assoc($res))$catOptions[] = $each;
-        echo json_encode(['code'=>0,'tagOptions'=>$tagOptions,'catOptions'=>$catOptions,'nid'=>$nid]);
+        echo json_encode(['code'=>0,'tagMap'=>$tagMap,'catOptions'=>$catOptions,'nid'=>$nid]);
     }
 }
 else{

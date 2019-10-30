@@ -14,9 +14,12 @@ if(isset($_GET['_'])&&in_array($_GET['_'],['anime','code','game','trivial','note
         while($each =  mysqli_fetch_assoc($res))$catMap[$each['cid']] = ['catName'=>$each['catName'],'catName_en'=>$each['catName_en']];
 
         $res = maria($link,"
-        select nid,title,preview,imgSrc,catID,catName,catName_en,time,tags
-        from Note.note_info as ni,Note.note_category as nc
-        where ni.catID=nc.cid
+        select tmp.*,ifnull(ttt.tags,'') as tags
+        from (
+            select nid,title,preview,imgSrc,catID,catName,catName_en,time
+            from Note.note_info as ni,Note.note_category as nc
+            where ni.catID=nc.cid
+        ) as tmp left join (select xid,type,group_concat(tagName) as tags from Tag.tm_tc group by concat(xid,type)) as ttt on nid=xid and ttt.type='note'
         order by time desc
         ");
         while($each =  mysqli_fetch_assoc($res))$notes[] = $each;

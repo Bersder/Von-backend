@@ -13,10 +13,13 @@ if (isset($_GET['serName'])&&($serName=maria_str_notnull_filter($_GET['serName']
 
     $serArts = [];
     $res = maria($link,"
-        select aid as id,type,title,preview,time,commentCount,tags
+    select tmp.*,ifnull(ttt.tags,'') as tags
+    from (
+        select aid as id,type,title,preview,time,commentCount
         from Article.article_info as ai,Article.series_link as sl
-        where ai.seriesID=sl.sid and seriesName=$serName
-        order by time desc 
+        where ai.seriesID=sl.sid and seriesName=$serName 
+    ) as tmp left join (select xid,type,group_concat(tagName) as tags from Tag.tm_tc group by concat(xid,type)) as ttt on id=xid and ttt.type<>'note'
+    order by time desc 
     ");
     while ($each=mysqli_fetch_assoc($res))$serArts[] = $each;
 

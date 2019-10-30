@@ -12,18 +12,14 @@ if (isset($_POST['token'])&&($auth = token_authorize($_POST['token']))){
         if (mysqli_fetch_row(maria($link,"select 1 from User.me where name='$name' and match_='$match' limit 1"))[0]){//通过密码认证开始删除文章及相关记录
             $id = $data['id'];
             $type = $data['type'];
-            $delTarget = ','.$id.',';
             if ($type==='note'){
-                $delInfo = mysqli_fetch_row(maria($link,"select tags,imgSrc from Note.note_info where nid=$id limit 1"));
-                if ($delTags = $delInfo[0]){
-                    $delTags = explode(',', $delTags);
-                    foreach ($delTags as $value){
-                        $escape_value = mysqli_real_escape_string($link, $value);
-                        maria($link,"update Tag.tag_cloud set relateNote=replace(relateNote,'$delTarget',',') where tagName='$escape_value' limit 1");
-                    }
-                }
+                $delInfo = mysqli_fetch_row(maria($link,"select imgSrc from Note.note_info where nid=$id limit 1"));
+                maria($link,"delete from Tag.tag_map where xid=$id and type='note'");
+                maria($link,"delete from Tag.tag_map_tmp where xid=$id and type='note'");
+
                 maria($link,"delete from Comment.comment where topic_id=$id and topic_type='$type'");
-                unlink($DISK_ROOT.$delInfo[1]);
+                unlink($DISK_ROOT.$delInfo[0]);
+                @unlink($DISK_ROOT.$delInfo[0].'.thumb');
                 maria($link,"delete from Note.note_info_tmp where nid=$id limit 1");
                 maria($link,"delete from Note.note_content_tmp where nid=$id limit 1");
                 maria($link,"delete from Note.note_info where nid=$id limit 1");
@@ -31,18 +27,14 @@ if (isset($_POST['token'])&&($auth = token_authorize($_POST['token']))){
                 echo json_encode(['code'=>0]);
             }
             else{
-                $delInfo = mysqli_fetch_row(maria($link,"select tags,imgSrc from Article.article_info where aid=$id limit 1"));
-                if ($delTags = $delInfo[0]){
-                    $delTags = explode(',',$delTags);
-                    foreach ($delTags as $value){
-                        $escape_value = mysqli_real_escape_string($link, $value);
-                        maria($link,"update Tag.tag_cloud set relateArt=replace(relateArt,'$delTarget',',') where tagName='$escape_value' limit 1");
-                    }//摸除标签
-
-                }
+                $delInfo = mysqli_fetch_row(maria($link,"select imgSrc from Article.article_info where aid=$id limit 1"));
+                //摸除标签
+                maria($link,"delete from Tag.tag_map where xid=$id and type<>'note'");
+                maria($link,"delete from Tag.tag_map_tmp where xid=$id and type<>'note'");
                 //摸除评论
                 maria($link,"delete from Comment.comment where topic_id=$id and topic_type='$type'");
-                unlink($DISK_ROOT.$delInfo[1]);
+                unlink($DISK_ROOT.$delInfo[0]);
+                @unlink($DISK_ROOT.$delInfo[0].'.thumb');
                 //摸除备份
                 maria($link,"delete from Article.article_info_tmp where aid=$id limit 1");
                 maria($link,"delete from Article.article_content_tmp where aid=$id limit 1");

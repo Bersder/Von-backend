@@ -15,17 +15,13 @@ if (isset($_POST['token']) && ($auth = token_authorize($_POST['token']))) {
                 else{
                     maria($link,"insert into Tag.tag_cloud (tid, tagName) values (null,$newTag)");
                     $id = mysqli_insert_id($link);
-                    echo json_encode(['code'=>0,'id'=>$id,'tagExist'=>$tagExist],JSON_NUMERIC_CHECK);
+                    echo json_encode(['code'=>0,'newTagInfo'=>['id'=>$id,'tagName'=>$data['newTag'],'count'=>0],'tagExist'=>$tagExist],JSON_NUMERIC_CHECK);
                 }
             }
-            elseif (isset($data['delTag'])&&($delTag=maria_str_notnull_filter($data['delTag'],$link))){
-                $reg1 = maria_escape('^'.$data['delTag'].',|^'.$data['delTag'].'$|,'.$data['delTag'].'$',$link) ;
-                $reg2 = maria_escape(','.$data['delTag'].',',$link) ;
-                maria($link,"update Article.article_info set tags=regexp_replace(tags,$reg1,''),tags=regexp_replace(tags,$reg2,',')");
-                maria($link,"update Article.article_info_tmp set tags=regexp_replace(tags,$reg1,''),tags=regexp_replace(tags,$reg2,',')");
-                maria($link,"update Note.note_info set tags=regexp_replace(tags,$reg1,''),tags=regexp_replace(tags,$reg2,',')");
-                maria($link,"update Note.note_info_tmp set tags=regexp_replace(tags,$reg1,''),tags=regexp_replace(tags,$reg2,',')");
-                maria($link,"delete from Tag.tag_cloud where tagName=$delTag limit 1");
+            elseif (isset($data['delTagID'])&&($delTagID=positive_int_filter($data['delTagID']))){
+                maria($link,"delete from Tag.tag_map where tid=$delTagID");
+                maria($link,"delete from Tag.tag_map_tmp where tid=$delTagID");
+                maria($link,"delete from Tag.tag_cloud where tid=$delTagID limit 1");
                 echo json_encode(['code'=>0]);
             }
             //--------------------------------------↓系列的添加删除（需修改相关文章）
@@ -101,9 +97,15 @@ if (isset($_POST['token']) && ($auth = token_authorize($_POST['token']))) {
 
     }
     else{
-        $tags = [];
-        $res = maria($link,"select tid as id,tagName,relateArt,relateNote from Tag.tag_cloud order by tagName asc limit 500");
-        while ($each = mysqli_fetch_assoc($res))$tags[] = $each;
+        $tagCountList = [];
+        $res = maria($link,"
+        select tid as id,tagName,ifnull(count,0) as count
+        from Tag.tag_cloud as tc left join (select count(tid) as count,tid from Tag.tag_map group by tid) as tmp
+        using(tid)
+        order by tagName asc;
+        ");
+        while ($each = mysqli_fetch_assoc($res))$tagCountList[] = $each;
+
 
         $seriesList = [];//系列关联文章计数
         $res = maria($link,"
@@ -144,7 +146,7 @@ if (isset($_POST['token']) && ($auth = token_authorize($_POST['token']))) {
                 $outerLinks[$each['type']][] = $each;
             }
         }
-        echo json_encode(['code'=>0,'data'=>['tags'=>$tags,'seriesList'=>$seriesList,'categoryList'=>$categoryList,'headers'=>$headers,'outerLinks'=>$outerLinks]],JSON_NUMERIC_CHECK);
+        echo json_encode(['code'=>0,'data'=>['tagCountList'=>$tagCountList,'seriesList'=>$seriesList,'categoryList'=>$categoryList,'headers'=>$headers,'outerLinks'=>$outerLinks]],JSON_NUMERIC_CHECK);
     }
 } else {
     http_response_code(401);

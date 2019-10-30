@@ -1,5 +1,5 @@
 # nameless-blog_apis
-back-end of nameless-blog
+无名博客后端，基于php实现
 
 ## 接口详情
 ### 授权接口
@@ -51,10 +51,9 @@ back-end of nameless-blog
 | apiv13 | 随机背景接口  | No Table | 
 | apiv14 | 系列页面接口  | S:series_link/ai | 
 
-## 重要保存点
-- 2019-10-24 a0eaedc 数据库重构前保存
 ## Log
-修复&新增,(SP为重要保存点)
+修复&新增,**(SP为重要保存点)**
+- 2019-10-24 a0eaedc 数据库重构前保存
 ### log01 **(SP评论表去冗余前)**
 - [X] apiv1：note接口新增notice信息
 - [X] 创建Series页面的接口apiv14
@@ -68,3 +67,5 @@ back-end of nameless-blog
 - [X] 数据库（文章系列相关）重组完成
 ### log04 **(SP数据库（笔记分类相关）重组完成)**
 - [X] 数据库（笔记分类相关）重组完成
+### log04 **(SP数据库（标签管理相关）重组完成)**
+- [X] 数据库（标签管理相关）重组完成

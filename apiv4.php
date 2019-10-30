@@ -3,12 +3,23 @@ require 'utils/init.php';
 $link = mysqli_connect('127.0.0.1','root','awsllswa') or die('数据库连接失败');
 $headerInfo = mysqli_fetch_assoc(maria($link,"select imgSrc,title,description from Page.header_area where type='archive' limit 1"));
 $noteNum = mysqli_fetch_row(maria($link,"select count(nid) from Note.note_info"))[0];
-$articles = [];$tags = [];
-$res = maria($link,"select aid as id,time,title,type,readCount,commentCount,tags from Article.article_info order by time desc limit 500");
+$articles = [];
+$res = maria($link,"
+select aid as id,time,title,ai.type,readCount,commentCount,ifnull(ttt.tags,'') as tags
+from Article.article_info as ai left join (select xid,type,group_concat(tagName) as tags from Tag.tm_tc group by concat(xid,type)) as ttt on aid=xid and ttt.type<>'note'
+union 
+select nid as id,time,title,ni.type,readCount,commentCount,ifnull(ttt.tags,'') as tags
+from Note.note_info as ni left join (select xid,type,group_concat(tagName) as tags from Tag.tm_tc group by concat(xid,type)) as ttt on nid=xid and ttt.type='note'
+order by time desc; 
+");
 while($each = mysqli_fetch_assoc($res))$articles[] = $each;
-$res = maria($link,"select nid as id,time,title,type,readCount,commentCount,tags from Note.note_info order by time desc limit 500");
-while($each = mysqli_fetch_assoc($res))$articles[] = $each;
-array_multisort(array_column($articles,'time'),SORT_DESC,$articles);
-$res = maria($link,"select tagName,relateArt,relateNote from Tag.tag_cloud limit 500");
-while ($each = mysqli_fetch_assoc($res))$tags[] = $each;
-echo json_encode(['code'=>0,'data'=>['articles'=>$articles,'tags'=>$tags,'headerInfo'=>$headerInfo,'noteNum'=>$noteNum]],JSON_NUMERIC_CHECK);
+
+$tagCountList = [];
+$res = maria($link,"
+select tid as id,tagName,ifnull(count,0) as count
+from Tag.tag_cloud as tc left join (select count(tid) as count,tid from Tag.tag_map group by tid) as tmp
+using(tid)
+order by tagName asc;
+");
+while ($each = mysqli_fetch_assoc($res))$tagCountList[] = $each;
+echo json_encode(['code'=>0,'data'=>['articles'=>$articles,'tagCountList'=>$tagCountList,'headerInfo'=>$headerInfo,'noteNum'=>$noteNum]],JSON_NUMERIC_CHECK);
