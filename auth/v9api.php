@@ -1,8 +1,8 @@
 <?php //删除图片/上传图片
 require '../utils/init.php';
 require '../utils/filters.php';
+require '../links/secret_link.php';
 $DISK_ROOT = $_SERVER['DOCUMENT_ROOT'];
-$link = mysqli_connect('127.0.0.1','root','awsllswa') or die('数据库连接失败');
 if (isset($_POST['token'])&&($auth = token_authorize($_POST['token']))){
     if (isset($_GET['delete']) && ($delId=positive_int_filter($_GET['delete']))){
         if($path = mysqli_fetch_row(maria($link,"select imgSrc from Page.album where id=$delId limit 1"))[0])

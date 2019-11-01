@@ -1,6 +1,6 @@
 <?php
 require '../utils/init.php';
-$link = mysqli_connect('127.0.0.1','root','awsllswa') or die('数据库连接失败');
+require '../links/secret_link.php';
 $key = 'DEEPDARKFANTASY1';
 if($decrypted = openssl_decrypt(base64_decode($_POST['encData']),'aes-128-cbc',$key,OPENSSL_RAW_DATA,base64_decode($_POST['param']))){
     $data = json_decode($decrypted,true);

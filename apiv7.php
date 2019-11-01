@@ -1,7 +1,7 @@
 <?php  //评论发布接口
 require 'utils/init.php';
 require 'utils/filters.php';
-$link = mysqli_connect('127.0.0.1','root','awsllswa') or die('数据库连接失败');
+require 'links/public_link.php';
 
 
 if (isset($_POST['puzzle'])&&($ass=base64_decode($_POST['puzzle']))){

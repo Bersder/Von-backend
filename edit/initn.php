@@ -1,7 +1,7 @@
 <?php
 require '../utils/init.php';
 require '../utils/filters.php';
-$link = mysqli_connect('127.0.0.1','root','awsllswa') or die('数据库连接失败');
+require '../links/limit_link.php';
 if (isset($_POST['token'])&&($auth = token_authorize($_POST['token']))){
     if(isset($_GET['nid'])){//存在nid，检验是否在tmp中，不存在就指导前端重指向
         if($nid=positive_int_filter($_GET['nid'])){

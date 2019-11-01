@@ -1,7 +1,7 @@
 <?php
 require '../utils/init.php';
 require '../utils/filters.php';
-$link = mysqli_connect('127.0.0.1','root','awsllswa') or die('数据库连接失败');
+require '../links/secret_link.php';
 if (isset($_POST['token'])){
     if($auth = token_authorize($_POST['token'])){
         //通过验证返回用户信息

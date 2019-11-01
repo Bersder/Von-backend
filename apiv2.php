@@ -1,6 +1,6 @@
 <?php //这是文章content-main加载更多接口
 require 'utils/init.php';
-$link = mysqli_connect('127.0.0.1','root','awsllswa') or die('数据库连接失败');
+require 'links/public_link.php';
 
 if(isset($_GET['_'])&&in_array($_GET['_'],['anime','code','game','trivial'])){
     if (isset($_GET['pn'])&&preg_match('/^[1-9]\\d*$/',$_GET['pn'])){

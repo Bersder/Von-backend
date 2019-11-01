@@ -1,7 +1,7 @@
 <?php //管理页面返回所有文章信息
 require '../utils/init.php';
 require '../utils/filters.php';
-$link = mysqli_connect('127.0.0.1','root','awsllswa') or die('数据库连接失败');
+require '../links/secret_link.php';
 if (isset($_POST['token'])&&($auth = token_authorize($_POST['token']))){
     $articles=[];
     $notes = [];

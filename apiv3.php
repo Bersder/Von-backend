@@ -1,6 +1,6 @@
 <?php //这是文章/笔记获取接口
 require 'utils/init.php';
-$link = mysqli_connect('127.0.0.1','root','awsllswa') or die('数据库连接失败');
+require 'links/public_link.php';
 
 if(isset($_GET['_'])&&in_array($_GET['_'],['a','c','g','t','n'])){
     if($_GET['_']=='n'&&preg_match('/^[1-9]\\d*$/',$_GET['xid'])){

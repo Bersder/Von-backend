@@ -1,6 +1,6 @@
 <?php //首页初始化&加载更多
 require 'utils/init.php';
-$link = mysqli_connect('127.0.0.1','root','awsllswa') or die('数据库连接失败');
+require 'links/public_link.php';
 if (isset($_GET['more'])&&preg_match('/^[1-9]\\d*$/',$_GET['more'])){
     $offset = $_GET['more']*8;
     $arts = [];

@@ -1,7 +1,7 @@
 <?php //增添删除动态
 require '../utils/init.php';
 require '../utils/filters.php';
-$link = mysqli_connect('127.0.0.1','root','awsllswa') or die('数据库连接失败');
+require '../links/secret_link.php';
 if (isset($_POST['token'])&&($auth = token_authorize($_POST['token']))){
     if (isset($_GET['delete']) && ($delId=positive_int_filter($_GET['delete']))){
         maria($link,"delete from Page.gossip where id=$delId limit 1");

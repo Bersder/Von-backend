@@ -1,9 +1,9 @@
 <?php //设置页面接口
 require '../utils/init.php';
 require '../utils/filters.php';
+require '../links/secret_link.php';
 $DISK_ROOT = $_SERVER['DOCUMENT_ROOT'];
 $key = 'DEEPDARKFANTASY1';
-$link = mysqli_connect('127.0.0.1', 'root', 'awsllswa') or die('数据库连接失败');
 if (isset($_POST['token']) && ($auth = token_authorize($_POST['token']))) {
     if (isset($_POST['encData'])&&isset($_POST['param'])){
         if($decrypted = openssl_decrypt(base64_decode($_POST['encData']),'aes-128-cbc',$key,OPENSSL_RAW_DATA,base64_decode($_POST['param']))){

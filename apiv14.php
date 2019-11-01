@@ -1,7 +1,7 @@
 <?php //系列页面接口
 require 'utils/init.php';
 require 'utils/filters.php';
-$link = mysqli_connect('127.0.0.1','root','awsllswa') or die('数据库连接失败');
+require 'links/public_link.php';
 if (isset($_GET['serName'])&&($serName=maria_str_notnull_filter($_GET['serName'],$link))){
     $res = maria($link,"
         select seriesName as serName,description as serDes

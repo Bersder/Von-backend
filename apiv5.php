@@ -1,6 +1,6 @@
 <?php //标签页面初始化& 相关筛选
 require 'utils/init.php';
-$link = mysqli_connect('127.0.0.1','root','awsllswa') or die('数据库连接失败');
+require 'links/public_link.php';
 
 if(isset($_GET['tag'])){ //带实际标签的访问
 

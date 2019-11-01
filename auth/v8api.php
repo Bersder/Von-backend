@@ -1,7 +1,7 @@
 <?php //相册初始化/加载更多
 require '../utils/init.php';
 require '../utils/filters.php';
-$link = mysqli_connect('127.0.0.1','root','awsllswa') or die('数据库连接失败');
+require '../links/secret_link.php';
 if (isset($_POST['token'])&&($auth = token_authorize($_POST['token']))){
     if (isset($_GET['pn'])&&isset($_GET['type'])){
         if ($pn=positive_int_filter($_GET['pn'])){

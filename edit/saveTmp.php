@@ -1,7 +1,7 @@
 <?php
 require '../utils/init.php';
 require '../utils/filters.php';
-$link = mysqli_connect('127.0.0.1','root','awsllswa') or die('数据库连接失败');
+require '../links/limit_link.php';
 if (isset($_POST['token'])&&($auth = token_authorize($_POST['token']))){
     if(isset($_GET['aid'])&&($type=in_array_filter($_POST['type'],['anime','code','game','trivial']))&&($aid=positive_int_filter($_GET['aid']))){
         $author = maria_escape($_POST['author'],$link) ;
