@@ -4,6 +4,7 @@
         "ext-json": "*",
         "ext-mysqli": "*",
         "ext-openssl": "*",
-        "ext-gd": "*"
+        "ext-gd": "*",
+        "erusev/parsedown": "^1.7"
     }
 }

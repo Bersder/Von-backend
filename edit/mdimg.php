@@ -34,7 +34,7 @@ if (isset($_POST['token'])&&($auth = token_authorize($_POST['token']))){
             echo json_encode(['code'=>1]);
     }
     else
-        echo json_encode(['code'=>1,'imgSrc'=>'/site/static/nodata.png']);
+        echo json_encode(['code'=>1,'imgSrc'=>'/static/images/nodata.png']);
 }
 else{
     http_response_code(401);

@@ -12,7 +12,7 @@ if($decrypted = openssl_decrypt(base64_decode($_POST['encData']),'aes-128-cbc',$
         if ($remember)
             $payload = [
                 'iss'=>'bersder3000.com',
-                'uid'=>$info['id'],
+                'uid'=>$info['uid'],
                 'name'=>$info['name'],
                 'exp'=>time()+1209600,
                 'iat'=>time(),
