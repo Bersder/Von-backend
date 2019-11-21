@@ -1,6 +1,6 @@
 <?php
 define('MY_MAIL','oshinonya@outlook.com'); // 发送邮箱
-define('MY_MAIL_PASSWORD','1Bersder'); // 发送邮箱密码
+define('MY_MAIL_PASSWORD','xxxxxxx'); // 发送邮箱密码或授权码
 define('MY_MAIL_NAME','忍野喵'); // 发送者名字
 define('RECEIVE_MAIL','1747322151@qq.com'); // 接收邮箱(有人回复了你的文章)
 define('BLOG_DOMAIN','https://www.oshinonya.com'); // 博客网址
@@ -46,9 +46,9 @@ function send_mail($send_configs,$send_me=false){
                 '<tr><td style="font-size:30px;color:#5abebc;padding:0">你的博客收到了一则评论</td></tr>'.
                 sprintf('<tr><td style="font-size:16px;padding-bottom:20px"><strong>%s</strong> 在<strong>《%s》</strong>上留下了一则评论：</td></tr>',$responder,$topic_name).
                 sprintf('<tr><td style="font-size:14px;background:#eaeaea;padding:10px 20px">%s</td></tr>',$mdParser->text($rawReply)).
-                sprintf('<tr><td style="font-size:16px;padding-top:20px"><a href="%s">点击此处前往现场(楼层#%d)</a></td></tr>',$topic_url,$parent_id).
+                sprintf('<tr><td style="font-size:16px;padding-top:20px"><a href="%s">点击此处前往现场(编号#%d)</a></td></tr>',$topic_url,$parent_id).
                 '</table>';
-            $mail->AltBody = sprintf("%s 评论了《%s》。前往 %s 查看（楼层#%d）",$responder,$topic_name,$topic_url,$parent_id);
+            $mail->AltBody = sprintf("%s 评论了《%s》。前往 %s 查看（编号#%d）",$responder,$topic_name,$topic_url,$parent_id);
         }
         else{
             $mail->Subject = '你有一条来自忍野喵的回复';
@@ -58,9 +58,9 @@ function send_mail($send_configs,$send_me=false){
                 sprintf('<tr><td style="font-size:14px;background:#eaeaea;padding:10px 20px">%s</td></tr>',$mdParser->text($rawComment)).
                 sprintf('<tr><td style="font-size:16px;padding:20px 0">收到了来自 <strong>%s</strong> 的回复：</td></tr>',$responder).
                 sprintf('<tr><td style="font-size:14px;background:#eaeaea;padding:10px 20px">%s</td></tr>',$mdParser->text($rawReply)).
-                sprintf('<tr><td style="font-size:16px;padding-top:20px"><a href="%s">点击此处前往现场(楼层#%d)</a></td></tr>',$topic_url,$parent_id).
+                sprintf('<tr><td style="font-size:16px;padding-top:20px"><a href="%s">点击此处前往现场(编号#%d)</a></td></tr>',$topic_url,$parent_id).
                 '</table>';
-            $mail->AltBody = sprintf("忍野喵提醒你：你在《%s》留下的评论被 %s 回复了。前往 %s 查看（楼层#%d）",$topic_name,$responder,$topic_url,$parent_id);
+            $mail->AltBody = sprintf("忍野喵提醒你：你在《%s》留下的评论被 %s 回复了。前往 %s 查看（编号#%d）",$topic_name,$responder,$topic_url,$parent_id);
         }
         $mail->send();
         echo '发送成功';
