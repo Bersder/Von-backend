@@ -2,7 +2,7 @@
 require '../utils/init.php';
 require '../utils/filters.php';
 require '../links/secret_link.php';
-if (isset($_POST['token'])&&($auth = token_authorize($_POST['token']))){
+if (isset($_COOKIE['utk'])&&($auth = token_authorize($_COOKIE['utk']))){
     if (isset($_GET['more'])&&($more=positive_int_filter($_GET['more']))) {
         $offset = $_GET['more']*10;
         $dynamics = [];

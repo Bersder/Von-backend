@@ -28,6 +28,10 @@ if($decrypted = openssl_decrypt(base64_decode($_POST['encData']),'aes-128-cbc',$
         $payload = base64_encode(json_encode($payload));
         $signature = hash_hmac('sha256',$head.'.'.$payload,'MYNAMEISVAN');
         $token = $head.'.'.$payload.'.'.$signature;
+        if ($remember)
+            setcookie('utk',$token,time()+1209600,'/');
+        else
+            setcookie('utk',$token,0,'/');
         echo json_encode(['code'=>0,'data'=>['info'=>$info,'remember'=>$remember,'token'=>$token]]);
     }
     else{

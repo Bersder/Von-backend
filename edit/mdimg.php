@@ -5,7 +5,7 @@ header('Access-Control-Allow-Origin:*');
 header('content-type: application/json;charset=UTF-8');
 $DISK_ROOT = $_SERVER['DOCUMENT_ROOT'];
 
-if (isset($_POST['token'])&&($auth = token_authorize($_POST['token']))){
+if (isset($_COOKIE['utk'])&&($auth = token_authorize($_COOKIE['utk']))){
     if(($imgInfo=file_filter('hi',5000000,['png','jpg','jpeg','gif','bmp']))&&(isset($_GET['aid'])||isset($_GET['nid']))){ //来的是header-img
         $xid = isset($_GET['aid'])?$_GET['aid']:$_GET['nid'];
         $isACGN = isset($_GET['aid']);

@@ -2,7 +2,7 @@
 require '../utils/init.php';
 require '../utils/filters.php';
 require '../links/limit_link.php';
-if (isset($_POST['token'])&&($auth = token_authorize($_POST['token']))){
+if (isset($_COOKIE['utk'])&&($auth = token_authorize($_COOKIE['utk']))){
     if(isset($_GET['aid'])&&($type=in_array_filter($_POST['type'],['anime','code','game','trivial']))&&($aid=positive_int_filter($_GET['aid']))){
         $author = maria_escape($_POST['author'],$link) ;
         $preview = maria_escape($_POST['preview'],$link) ;

@@ -2,7 +2,7 @@
 require '../utils/init.php';
 require '../utils/filters.php';
 require '../links/secret_link.php';
-if (isset($_POST['token'])&&($auth = token_authorize($_POST['token']))){
+if (isset($_COOKIE['utk'])&&($auth = token_authorize($_COOKIE['utk']))){
     if (isset($_GET['pn'])&&isset($_GET['type'])){
         if ($pn=positive_int_filter($_GET['pn'])){
             $offset = ($pn-1)*20;

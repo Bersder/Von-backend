@@ -3,7 +3,7 @@ require '../utils/init.php';
 require '../utils/filters.php';
 require '../links/secret_link.php';
 $DISK_ROOT = $_SERVER['DOCUMENT_ROOT'];
-if (isset($_POST['token'])&&($auth = token_authorize($_POST['token']))){
+if (isset($_COOKIE['utk'])&&($auth = token_authorize($_COOKIE['utk']))){
     if (isset($_GET['delete']) && ($delId=positive_int_filter($_GET['delete']))){
         if($path = mysqli_fetch_row(maria($link,"select imgSrc from Page.album where id=$delId limit 1"))[0])
             unlink($DISK_ROOT.$path);

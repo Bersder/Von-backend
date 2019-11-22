@@ -1,6 +1,7 @@
 <?php
 require 'utils/ImgThumb.php';
 require 'utils/utils.php';
+var_dump($_COOKIE);
 //header('Access-Control-All-Origin:http://127.0.0.1:8080');
 //header('Content-type:application/json');
 

@@ -4,7 +4,7 @@ require '../utils/filters.php';
 require '../links/secret_link.php';
 $DISK_ROOT = $_SERVER['DOCUMENT_ROOT'];
 $key = 'DEEPDARKFANTASY1';
-if (isset($_POST['token']) && ($auth = token_authorize($_POST['token']))) {
+if (isset($_COOKIE['utk'])&&($auth = token_authorize($_COOKIE['utk']))){
     if (isset($_POST['encData'])&&isset($_POST['param'])){
         if($decrypted = openssl_decrypt(base64_decode($_POST['encData']),'aes-128-cbc',$key,OPENSSL_RAW_DATA,base64_decode($_POST['param']))){
             $data = json_decode($decrypted,true);

@@ -2,7 +2,7 @@
 require '../utils/init.php';
 require '../utils/filters.php';
 require '../links/secret_link.php';
-if (isset($_POST['token'])&&($auth = token_authorize($_POST['token']))){
+if (isset($_COOKIE['utk'])&&($auth = token_authorize($_COOKIE['utk']))){
     if($id = positive_int_filter($_POST['id'])){
         $flag = isset($_GET['topped'])?1:0;
         maria($link,"update Article.article_info set topped=$flag where aid=$id limit 1");

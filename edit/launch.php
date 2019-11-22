@@ -22,7 +22,7 @@ function add_newTags($link){
         return '';
 }
 
-if (isset($_POST['token'])&&($auth = token_authorize($_POST['token']))){
+if (isset($_COOKIE['utk'])&&($auth = token_authorize($_COOKIE['utk']))){
     if(isset($_GET['aid'])&&in_array($_POST['type'],['anime','code','game','trivial'])){
         maria($link,'use Article');
         if($aid=positive_int_filter($_GET['aid'])){

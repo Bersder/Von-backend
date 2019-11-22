@@ -2,7 +2,7 @@
 require '../utils/init.php';
 require '../utils/filters.php';
 require '../links/limit_link.php';
-if (isset($_POST['token'])&&($auth = token_authorize($_POST['token']))){
+if (isset($_COOKIE['utk'])&&($auth = token_authorize($_COOKIE['utk']))){
     if(isset($_GET['aid'])){//存在aid，检验是否在tmp中，不存在就指导前端重指向
         if($aid=positive_int_filter($_GET['aid'])){
             if ($aid_exist = mysqli_fetch_row(maria($link,"select 1 from Article.article_info_tmp where aid=$aid and asdraft=1 limit 1"))[0]){
