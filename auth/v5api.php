@@ -18,7 +18,7 @@ if (isset($_COOKIE['utk'])&&($auth = token_authorize($_COOKIE['utk']))){
                 maria($link,"delete from Tag.tag_map_tmp where xid=$id and type='note'");
 
                 maria($link,"delete from Comment.comment where topic_id=$id and topic_type='$type'");
-                unlink($DISK_ROOT.$delInfo[0]);
+                @unlink($DISK_ROOT.$delInfo[0]);
                 @unlink($DISK_ROOT.$delInfo[0].'.thumb');
                 maria($link,"delete from Note.note_info_tmp where nid=$id limit 1");
                 maria($link,"delete from Note.note_content_tmp where nid=$id limit 1");
@@ -33,7 +33,7 @@ if (isset($_COOKIE['utk'])&&($auth = token_authorize($_COOKIE['utk']))){
                 maria($link,"delete from Tag.tag_map_tmp where xid=$id and type<>'note'");
                 //摸除评论
                 maria($link,"delete from Comment.comment where topic_id=$id and topic_type='$type'");
-                unlink($DISK_ROOT.$delInfo[0]);
+                @unlink($DISK_ROOT.$delInfo[0]);
                 @unlink($DISK_ROOT.$delInfo[0].'.thumb');
                 //摸除备份
                 maria($link,"delete from Article.article_info_tmp where aid=$id limit 1");

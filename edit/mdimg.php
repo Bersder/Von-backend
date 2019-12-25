@@ -1,8 +1,7 @@
 <?php
 require '../utils/filters.php';
 require '../utils/utils.php';
-header('Access-Control-Allow-Origin:*');
-header('content-type: application/json;charset=UTF-8');
+require '../utils/init.php';
 $DISK_ROOT = $_SERVER['DOCUMENT_ROOT'];
 
 if (isset($_COOKIE['utk'])&&($auth = token_authorize($_COOKIE['utk']))){

@@ -72,3 +72,9 @@
 ### log05
 - [X] 评论区头像拉取功能支持
 - [X] 评论区回复提醒功能实现
+### log06
+- [X] 新增番组接口
+## 注意
+源代码默认开发环境状态，如要投入生产，请按照下面修改
+- `apiv7.php`中 **passthru**函数中的地址为php执行文件的绝对地址
+- `utils/init.php`中 **Access-Control-Allow-Origin**修改为网站域名；define常量按实际修改

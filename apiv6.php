@@ -14,7 +14,7 @@ function gen_replies(&$items){
         $item['replies'] = $replies;
     }
 }
-if(isset($_POST['type'])&&in_array($_POST['type'],['anime','code','game','trivial','note','link'])){
+if(isset($_POST['type'])&&in_array($_POST['type'],['anime','code','game','trivial','note','link','bgm'])){
     if (isset($_POST['id'])&&preg_match('/^[1-9]\\d*$/',$_POST['id'])){
         $type = $_POST['type'];
         $id = $_POST['id'];

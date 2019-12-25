@@ -29,9 +29,9 @@ if($decrypted = openssl_decrypt(base64_decode($_POST['encData']),'aes-128-cbc',$
         $signature = hash_hmac('sha256',$head.'.'.$payload,'MYNAMEISVAN');
         $token = $head.'.'.$payload.'.'.$signature;
         if ($remember)
-            setcookie('utk',$token,time()+1209600,'/');
+            setcookie('utk',$token,time()+1209600,'/',C_DOMAIN);
         else
-            setcookie('utk',$token,0,'/');
+            setcookie('utk',$token,0,'/',C_DOMAIN);
         echo json_encode(['code'=>0,'data'=>['info'=>$info,'remember'=>$remember,'token'=>$token]]);
     }
     else{

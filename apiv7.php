@@ -27,7 +27,7 @@ function get_qq_avatar($qq, $path){
 if (isset($_POST['puzzle'])&&($ass=base64_decode($_POST['puzzle']))){
     $ass = explode(',',$ass);
     if (sizeof($ass)==3&&($ass[0]+$ass[1]==$ass[2])){
-        if(($topic_id = positive_int_filter($_POST['id']))&&($topic_type = in_array_filter($_POST['type'],['anime','code','game','trivial','note','link']))){
+        if(($topic_id = positive_int_filter($_POST['id']))&&($topic_type = in_array_filter($_POST['type'],['anime','code','game','trivial','note','link','bgm']))){
             if(($uname=maria_str_notnull_filter($_POST['nickname'],$link))&&($email=maria_str_notnull_filter($_POST['email'],$link))){
                 if (($parent_id=maria_pintORnull_filter($_POST['to_id']))&&($to_uid=maria_pintORnull_filter($_POST['to_uid']))){
                     $qq = maria_pintORnull_filter($_POST['qq']);

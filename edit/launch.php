@@ -81,7 +81,7 @@ if (isset($_COOKIE['utk'])&&($auth = token_authorize($_COOKIE['utk']))){
 
                 $oldImg = mysqli_fetch_row(maria($link,"select imgSrc from article_info where aid=$aid limit 1"))[0];//旧图删除
                 if($oldImg!=$imgSrc){
-                    unlink($DISK_ROOT.$oldImg);
+                    @unlink($DISK_ROOT.$oldImg);
                     @unlink($DISK_ROOT.$oldImg.'.thumb');
                 }//避免同名不同格式
                 maria($link,"update article_info set author='$author',imgSrc='$imgSrc',preview='$preview',seriesID=$seriesID,title='$title',type='$type',lut=now() where aid=$aid limit 1");
@@ -134,7 +134,7 @@ if (isset($_COOKIE['utk'])&&($auth = token_authorize($_COOKIE['utk']))){
                 }
                 $oldImg = mysqli_fetch_row(maria($link,"select imgSrc from note_info where nid=$nid limit 1"))[0];//旧图删除
                 if($oldImg!=$imgSrc){
-                    unlink($DISK_ROOT.$oldImg);
+                    @unlink($DISK_ROOT.$oldImg);
                     @unlink($DISK_ROOT.$oldImg.'.thumb');
                 }
                 maria($link,"update note_info set author='$author',imgSrc='$imgSrc',preview='$preview',catID=$catID,title='$title',type='$type',lut=now() where nid=$nid limit 1");

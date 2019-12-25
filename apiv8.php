@@ -23,7 +23,10 @@ if(isset($_GET['_'])&&in_array($_GET['_'],['anime','code','game',])){
     }
     elseif($type=='anime'){
         // 还有追番列表
-        echo json_encode(['code'=>0,'data'=>['album'=>$album,'gossip'=>$gossip,'headerInfo'=>$headerInfo]]);
+        $bgms = [];
+        $res = maria($link,"select nameCN,link,curNum,epsNum from Page.bangumi where fin=0");
+        while ($each = mysqli_fetch_assoc($res))$bgms[] = $each;
+        echo json_encode(['code'=>0,'data'=>['album'=>$album,'bgms'=>$bgms,'gossip'=>$gossip,'headerInfo'=>$headerInfo]]);
     }
     else
         echo json_encode(['code'=>0,'data'=>['album'=>$album,'gossip'=>$gossip,'headerInfo'=>$headerInfo]]);
