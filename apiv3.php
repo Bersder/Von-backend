@@ -1,11 +1,26 @@
 <?php //这是文章/笔记获取接口
 require 'utils/init.php';
 require 'links/public_link.php';
+require 'utils/utils.php';
+function visit_log($xid,$xType){
+    global $link;
+    if ($ip = get_ip()){
+        $loc = mysqli_real_escape_string($link,get_ip_loc($ip));
+        maria($link,"insert into Tmp.visit_log values('$ip','$loc','$xType',$xid,1) on duplicate key update pv=pv+1");
+        $pv = mysqli_fetch_row(maria($link,"select pv from Tmp.visit_log where ip='$ip' and xtype='$xType' and xid=$xid"))[0];
+        if ($pv<=3){
+            if ($xType=='note')
+                maria($link,"update Note.note_info set readCount=readCount+1 where nid=$xid limit 1");
+            else
+                maria($link, "update Article.article_info set readCount=readCount+1 where aid=$xid limit 1");
+        }
+    }
+}
 
 if(isset($_GET['_'])&&in_array($_GET['_'],['a','c','g','t','n'])){
     if($_GET['_']=='n'&&preg_match('/^[1-9]\\d*$/',$_GET['xid'])){
         $nid = $_GET['xid'];
-        maria($link,"update Note.note_info set readCount=readCount+1 where nid=$nid limit 1");
+        @visit_log($nid, 'note');
         if($info = mysqli_fetch_assoc(maria($link,"
         select title,preview,imgSrc,author,time,lut,commentCount,readCount,liked,ifnull(ttt.tags,'') as tags
         from (select * from Note.note_info where nid=$nid limit 1) as ni 
@@ -36,7 +51,7 @@ if(isset($_GET['_'])&&in_array($_GET['_'],['a','c','g','t','n'])){
         }
 
         $aid = $_GET['xid'];
-        maria($link, "update Article.article_info set readCount=readCount+1 where aid=$aid limit 1");
+        @visit_log($aid, $type);
         if($info = mysqli_fetch_assoc(maria($link,"
         select title,preview,imgSrc,author,time,lut,seriesName as series,commentCount,readCount,liked,ifnull(ttt.tags,'') as tags
         from (select * from Article.article_info where aid=$aid and type='$type' limit 1) as ai 

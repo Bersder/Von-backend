@@ -57,3 +57,24 @@ function thumb_img($src,$dst=null,$maxsize=300,$quality=20){ //生成缩略图
     else
         return false;
 }
+function get_ip(){
+    $ip = isset($_SERVER['REMOTE_ADDR'])?$_SERVER['REMOTE_ADDR']:false;
+    if ($ip&&preg_match('/^(\d{1,3}\.){3}\d{1,3}$/',$ip))
+        return $ip;
+    else
+        return false;
+}
+function get_ip_loc($ip){
+    $url="http://ip.taobao.com/service/getIpInfo.php?ip=".$ip;
+    $data = json_decode(file_get_contents($url),true);
+    if ($data['code']!=0)
+        return 'Unknown Area';
+    else{
+        $tmp = $data['data'];
+        $country = ($tmp['country']=='中国'||$tmp['country']=='XX')?'':$tmp['country'];
+        $region = $tmp['region']=='XX'?'':$tmp['region'];
+        $city = $tmp['city']=='XX'?'':$tmp['city'];
+        $isp = $tmp['isp']=='XX'?'':' '.$tmp['isp'];
+        return $country.$region.$city.$isp;
+    }
+}
