@@ -51,8 +51,11 @@
 | apiv13 | 随机背景接口  | No Table | 
 | apiv14 | 系列页面接口  | S:series_link/ai | 
 
-## Log
-修复&新增,**(SP为重要保存点)**
+## 版本更新
+[更新日志](./CHANGE_LOG.md)
+
+## 远古更新记录（由旧到新）
+**(SP为重要保存点)**
 - 2019-10-24 a0eaedc 数据库重构前保存
 ### log01 **(SP评论表去冗余前)**
 - [X] apiv1：note接口新增notice信息
@@ -78,3 +81,7 @@
 源代码默认开发环境状态，如要投入生产，请按照下面修改
 - `apiv7.php`中 **passthru**函数中的地址为php执行文件的绝对地址
 - `utils/init.php`中 **Access-Control-Allow-Origin**修改为网站域名；define常量按实际修改
+php.ini 配置
+- `allow_url_fopen` 设置 ON，启用`user_agent`并设置伪装
+- `upload_max_filesize`按需设置，nginx也要对应配置
+- `display_errors` 设置 OFF
