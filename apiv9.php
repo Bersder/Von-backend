@@ -9,7 +9,7 @@ if (isset($_GET['offset'])){
     echo json_encode(['code'=>0,'data'=>['arts'=>$arts]]);
 }
 else{
-    $gossip = mysqli_fetch_assoc(maria($link,"select content,time from Page.gossip  order by time desc limit 1"));
+    $dynamic = mysqli_fetch_assoc(maria($link,"select id,content,time from Dynamic.dyn_record order by id desc limit 1"));
     $latestUpdate = [];
     $res = maria($link,"select aid,title,type,lut from Article.article_info order by lut desc limit 5");
     while ($each = mysqli_fetch_assoc($res))$latestUpdate[] = $each;
@@ -23,6 +23,6 @@ else{
     $res = maria($link,"select aid,title,preview,imgSrc,type from Article.article_info where topped=1 limit 6");
     while ($each = mysqli_fetch_assoc($res))$topped[] = $each;
     $notice = mysqli_fetch_row(maria($link,"select content from Page.notice where type='home' order by time desc limit 1"))[0];
-    echo json_encode(['code'=>0,'data'=>['latestUpdate'=>$latestUpdate,'gossip'=>$gossip,'hits'=>$hits,'arts'=>$arts,'topped'=>$topped,'notice'=>$notice]]);
+    echo json_encode(['code'=>0,'data'=>['latestUpdate'=>$latestUpdate,'dynamic'=>$dynamic,'hits'=>$hits,'arts'=>$arts,'topped'=>$topped,'notice'=>$notice]]);
 }
 

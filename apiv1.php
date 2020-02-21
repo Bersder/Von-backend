@@ -37,8 +37,8 @@ if(isset($_GET['_'])&&in_array($_GET['_'],['anime','code','game','trivial','note
         $album = [];
         $res = maria($link,"select imgSrc,description,time from Page.album where type='trivial' order by time desc limit 15");
         while ($each = mysqli_fetch_assoc($res))$album[] = $each;
-        $gossip = mysqli_fetch_assoc(maria($link,"select content,time from Page.gossip where type='trivial' order by time desc limit 1"));
-        echo json_encode(['code'=>0,'data'=>['artNum'=>$artNum,'artsNew'=>$artsNew,'artsHot'=>$artsHot,'album'=>$album,'gossip'=>$gossip,'headerInfo'=>$headerInfo]]);
+        $dynamic = mysqli_fetch_assoc(maria($link,"select id,content,time from Dynamic.dyn_record where type=4 order by id desc limit 1"));
+        echo json_encode(['code'=>0,'data'=>['artNum'=>$artNum,'artsNew'=>$artsNew,'artsHot'=>$artsHot,'album'=>$album,'dynamic'=>$dynamic,'headerInfo'=>$headerInfo]]);
 
     }
     else{

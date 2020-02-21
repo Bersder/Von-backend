@@ -2,9 +2,10 @@
 require 'utils/init.php';
 require 'links/public_link.php';
 if(isset($_GET['_'])&&in_array($_GET['_'],['anime','code','game',])){
-    $type = mysqli_real_escape_string($link,$_GET['_']);
+    $type = $_GET['_'];
+    $typeID = array_search($type,['anime','code','game']) + 1;
     $album = [];
-    $gossip = mysqli_fetch_assoc(maria($link,"select content,time from Page.gossip where type='$type' order by time desc limit 1"));
+    $dynamic = mysqli_fetch_assoc(maria($link,"select id,content,time from Dynamic.dyn_record where type=$typeID order by id desc limit 1"));
     $headerInfo = mysqli_fetch_assoc(maria($link,"select imgSrc,title,description from Page.header_area where type='$type' limit 1"));
     if ($type!='code'){
         $res = maria($link,"select imgSrc,description,time from Page.album where type='$type' order by time desc limit 15");
@@ -18,7 +19,7 @@ if(isset($_GET['_'])&&in_array($_GET['_'],['anime','code','game',])){
         on tmp.seriesID=sl.sid;
         ");
         while ($each = mysqli_fetch_assoc($res))$seriesList[] = $each;
-        echo json_encode(['code'=>0,'data'=>['album'=>$album,'gossip'=>$gossip,'seriesList'=>$seriesList,'headerInfo'=>$headerInfo]]);
+        echo json_encode(['code'=>0,'data'=>['album'=>$album,'dynamic'=>$dynamic,'seriesList'=>$seriesList,'headerInfo'=>$headerInfo]]);
 
     }
     elseif($type=='anime'){
@@ -26,8 +27,8 @@ if(isset($_GET['_'])&&in_array($_GET['_'],['anime','code','game',])){
         $bgms = [];
         $res = maria($link,"select nameCN,link,curNum,epsNum from Page.bangumi where fin=0");
         while ($each = mysqli_fetch_assoc($res))$bgms[] = $each;
-        echo json_encode(['code'=>0,'data'=>['album'=>$album,'bgms'=>$bgms,'gossip'=>$gossip,'headerInfo'=>$headerInfo]]);
+        echo json_encode(['code'=>0,'data'=>['album'=>$album,'bgms'=>$bgms,'dynamic'=>$dynamic,'headerInfo'=>$headerInfo]]);
     }
     else
-        echo json_encode(['code'=>0,'data'=>['album'=>$album,'gossip'=>$gossip,'headerInfo'=>$headerInfo]]);
+        echo json_encode(['code'=>0,'data'=>['album'=>$album,'dynamic'=>$dynamic,'headerInfo'=>$headerInfo]]);
 }
