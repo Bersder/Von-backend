@@ -65,16 +65,16 @@ function get_ip(){
         return false;
 }
 function get_ip_loc($ip){
-    $url="http://ip.taobao.com/service/getIpInfo.php?ip=".$ip;
-    $data = json_decode(file_get_contents($url),true);
-    if ($data['code']!=0)
-        return 'Unknown Area';
-    else{
-        $tmp = $data['data'];
-        $country = ($tmp['country']=='中国'||$tmp['country']=='XX')?'':$tmp['country'];
-        $region = $tmp['region']=='XX'?'':$tmp['region'];
-        $city = $tmp['city']=='XX'?'':$tmp['city'];
-        $isp = $tmp['isp']=='XX'?'':' '.$tmp['isp'];
-        return $country.$region.$city.$isp;
-    }
+    $url="http://whois.pconline.com.cn/ip.jsp?ip=".$ip;
+    return trim(iconv("GBK", "UTF-8",file_get_contents($url)));
+//    if ($data['code']!=0)
+//        return 'Unknown Area';
+//    else{
+//        $tmp = $data['data'];
+//        $country = ($tmp['country']=='中国'||$tmp['country']=='XX')?'':$tmp['country'];
+//        $region = $tmp['region']=='XX'?'':$tmp['region'];
+//        $city = $tmp['city']=='XX'?'':$tmp['city'];
+//        $isp = $tmp['isp']=='XX'?'':' '.$tmp['isp'];
+//        return $country.$region.$city.$isp;
+//    }
 }

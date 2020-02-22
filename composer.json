@@ -5,6 +5,7 @@
         "ext-mysqli": "*",
         "ext-openssl": "*",
         "ext-gd": "*",
+        "ext-iconv": "*",
         "erusev/parsedown": "^1.7"
     }
 }
