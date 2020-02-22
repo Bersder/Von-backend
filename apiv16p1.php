@@ -50,7 +50,7 @@ if (isset($_GET['did'])&&($did=positive_int_filter($_GET['did']))){
 elseif (isset($_GET['like'])&&($did=positive_int_filter($_GET['like']))){
     //动态喜欢，利用ip进行唯一性确定
     if ($ip = get_ip()){
-        $loc = maria_escape(get_ip_loc($ip),$link);
+        $loc = 'NO CATCHING';
         if(!mysqli_fetch_row(maria($link,"select 1 from Dynamic.dyn_like_log where ip='$ip' and dyn_id=$did"))){
             maria($link,"update Dynamic.dyn_record set liked=liked+1 where id=$did limit 1");
             maria($link,"insert into Dynamic.dyn_like_log values ('$ip',$did,$loc,now())");
