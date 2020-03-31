@@ -24,10 +24,10 @@ if (isset($_COOKIE['utk'])&&($auth = token_authorize($_COOKIE['utk']))){
 
                 $res = maria($link,"select sid,seriesName from Article.series_link limit 50");$seriesOptions = [];
                 while ($each = mysqli_fetch_assoc($res))$seriesOptions[] = $each;
-                echo json_encode(['info'=>$info,'rawContent'=>$content['rawContent'],'tagMap'=>$tagMap,'seriesOptions'=>$seriesOptions,'exist'=>$aid_exist]);
+                echo json_encode(['code'=>0,'info'=>$info,'rawContent'=>$content['rawContent'],'tagMap'=>$tagMap,'seriesOptions'=>$seriesOptions,'exist'=>$aid_exist]);
             }
             else
-                echo json_encode(['exist'=>$aid_exist]);
+                echo json_encode(['code'=>0,'exist'=>$aid_exist]);
         }
 
     }

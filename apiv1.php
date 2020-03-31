@@ -41,13 +41,13 @@ if(isset($_GET['_'])&&in_array($_GET['_'],['anime','code','game','trivial','note
         $type = mysqli_real_escape_string($link,$_GET['_']);
         $artsNew=[];$artsHot=[];$artNum=0;
         $artNum = mysqli_fetch_row(maria($link,"select count(aid) as count from Article.article_info where type='$type'"))[0];
-
+        $headerInfo = mysqli_fetch_assoc(maria($link,"select imgSrc,title,description from Page.header_area where type='$type' limit 1"));
         $res = maria($link,"select aid,author,title,preview,imgSrc,commentCount,readCount,time,type from Article.article_info where type='$type' order by time desc limit 6");
         while ($each = mysqli_fetch_assoc($res))$artsNew[] = $each;
         $res = maria($link,"select aid,author,title,preview,imgSrc,commentCount,readCount,time,type from Article.article_info where type='$type' order by readCount desc limit 6");
         while ($each = mysqli_fetch_assoc($res))$artsHot[] = $each;
         //array_multisort(array_column($artsNew,'readCount'),SORT_DESC,$artsNew);
-        echo json_encode(['code'=>0,'data'=>['artNum'=>$artNum,'artsNew'=>$artsNew,'artsHot'=>$artsHot,]]);
+        echo json_encode(['code'=>0,'data'=>['artNum'=>$artNum,'artsNew'=>$artsNew,'artsHot'=>$artsHot,'headerInfo'=>$headerInfo]]);
     }
 }
 

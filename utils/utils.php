@@ -59,6 +59,7 @@ function thumb_img($src,$dst=null,$maxsize=300,$quality=20){ //生成缩略图
 }
 function get_ip(){
     $ip = isset($_SERVER['REMOTE_ADDR'])?$_SERVER['REMOTE_ADDR']:false;
+    $ip = isset($_SERVER['HTTP_X_REAL_IP'])?$_SERVER['HTTP_X_REAL_IP']:$ip;
     if ($ip&&preg_match('/^(\d{1,3}\.){3}\d{1,3}$/',$ip))
         return $ip;
     else

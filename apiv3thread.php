@@ -16,7 +16,10 @@ function visit_log($ip,$xid,$xType){
         }
     }
 }
-
+if (php_sapi_name()!=='cli'){
+    echo json_encode(['code'=>1,'message'=>'big brother is watching you']);
+    die();
+}
 $args = getopt('',['ip:','xid:','xType:']);
 $ip = $args['ip'];
 $xid = $args['xid'];

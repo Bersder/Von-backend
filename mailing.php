@@ -63,6 +63,10 @@ function send_mail($send_configs,$send_me=false){
         echo '发送失败';
     }
 }
+if (php_sapi_name()!=='cli'){
+    echo json_encode(['code'=>1,'message'=>'big brother is watching you']);
+    die();
+}
 $args = getopt('f::d::',['pid:','sid:']);
 $pid = $args['pid'];
 $sid = $args['sid'];

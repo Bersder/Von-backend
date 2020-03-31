@@ -25,10 +25,10 @@ if (isset($_COOKIE['utk'])&&($auth = token_authorize($_COOKIE['utk']))){
                 $catOptions = [];
                 $res = maria($link,"select cid,catName from Note.note_category");
                 while ($each = mysqli_fetch_assoc($res))$catOptions[] = $each;
-                echo json_encode(['info'=>$info,'rawContent'=>$content['rawContent'],'tagMap'=>$tagMap,'catOptions'=>$catOptions,'exist'=>$nid_exist]);
+                echo json_encode(['code'=>0,'info'=>$info,'rawContent'=>$content['rawContent'],'tagMap'=>$tagMap,'catOptions'=>$catOptions,'exist'=>$nid_exist]);
             }
             else
-                echo json_encode(['exist'=>$nid_exist]);
+                echo json_encode(['code'=>0,'exist'=>$nid_exist]);
         }
 
     }

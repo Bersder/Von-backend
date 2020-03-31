@@ -25,8 +25,7 @@ if (isset($_GET['serName'])&&($serName=maria_str_notnull_filter($_GET['serName']
 
 
     $serList = [];
-    if (isset($_GET['init'])){
-        $res = maria($link,"
+    $res = maria($link,"
         select seriesName as serName,count
         from (select seriesID,count(*) as count from Article.article_info where seriesID is not null group by seriesID) as tmp left join Article.series_link as sl 
         on tmp.seriesID=sl.sid
@@ -35,9 +34,8 @@ if (isset($_GET['serName'])&&($serName=maria_str_notnull_filter($_GET['serName']
         from Article.series_link
         where sid not in (select distinct seriesID from Article.article_info where seriesID is not null);
     ");
-        while ($each=mysqli_fetch_assoc($res))$serList[] = $each;
-        array_multisort(array_column($serList,'serName'),SORT_ASC,$serList);//按系列名升序排序
-    }
+    while ($each=mysqli_fetch_assoc($res))$serList[] = $each;
+    array_multisort(array_column($serList,'serName'),SORT_ASC,$serList);//按系列名升序排序
 
     echo json_encode(['code'=>0,'data'=>['serInfo'=>$serInfo,'serArts'=>$serArts,'serList'=>$serList]],JSON_NUMERIC_CHECK);
 }
