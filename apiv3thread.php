@@ -6,13 +6,13 @@ function visit_log($ip,$xid,$xType){
     global $link;
     if ($ip){
         $loc = mysqli_real_escape_string($link,get_ip_loc($ip));
-        if (stripos($loc,'google')!==false){
+        if (preg_match('/google|ovh|Advanced/i',$loc)){
             maria($link,"update Tmp.visit_log set pv=pv+1,lastVisit=now() where ip='0.0.0.0' limit 1");
         }
         else{
             maria($link,"insert into Tmp.visit_log values('$ip','$loc','$xType',$xid,1,default) on duplicate key update pv=pv+1,lastVisit=now()");
             $pv = mysqli_fetch_row(maria($link,"select pv from Tmp.visit_log where ip='$ip' and xtype='$xType' and xid=$xid"))[0];
-            if ($pv<=3){
+            if ($pv<=2){
                 if ($xType=='note')
                     maria($link,"update Note.note_info set readCount=readCount+1 where nid=$xid limit 1");
                 else
