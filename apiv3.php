@@ -1,13 +1,20 @@
 <?php //这是文章/笔记获取接口
+use Jenssegers\Agent\Agent;
 require 'utils/init.php';
 require 'links/public_link.php';
 require 'utils/utils.php';
+require 'vendor/autoload.php';
 
+$agent = new Agent();
+$bro = $agent->browser();
+$os = $agent->platform();
+$bro .= ' '. $agent->version($bro);
+$os .= $agent->version($os);
 if(isset($_GET['_'])&&in_array($_GET['_'],['a','c','g','t','n'])){
     $ip = get_ip();
     if($_GET['_']=='n'&&preg_match('/^[1-9]\\d*$/',$_GET['xid'])){
         $nid = $_GET['xid'];
-        passthru("/usr/local/php/bin/php apiv3thread.php --ip=$ip --xid=$nid --xType=note");
+        passthru("/usr/local/php/bin/php apiv3thread.php --ip=$ip --xid=$nid --xType=note --browser='$bro' --os='$os'");
         if($info = mysqli_fetch_assoc(maria($link,"
         select title,preview,imgSrc,author,time,lut,commentCount,readCount,liked,ifnull(ttt.tags,'') as tags
         from (select * from Note.note_info where nid=$nid limit 1) as ni 
@@ -38,7 +45,7 @@ if(isset($_GET['_'])&&in_array($_GET['_'],['a','c','g','t','n'])){
         }
 
         $aid = $_GET['xid'];
-        passthru("/usr/local/php/bin/php apiv3thread.php --ip=$ip --xid=$aid --xType=$type");
+        passthru("/usr/local/php/bin/php apiv3thread.php --ip=$ip --xid=$aid --xType=$type --browser='$bro' --os='$os'");
         if($info = mysqli_fetch_assoc(maria($link,"
         select title,preview,imgSrc,author,time,lut,seriesName as series,commentCount,readCount,liked,ifnull(ttt.tags,'') as tags
         from (select * from Article.article_info where aid=$aid and type='$type' limit 1) as ai 

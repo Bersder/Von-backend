@@ -161,14 +161,6 @@ CREATE TABLE `bangumi` (
   PRIMARY KEY (`id`)
 );
 
-CREATE TABLE `gossip` (
-  `id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
-  `type` varchar(10) NOT NULL,
-  `content` varchar(200) NOT NULL,
-  `time` datetime NOT NULL,
-  PRIMARY KEY (`id`)
-);
-
 CREATE TABLE `header_area` (
   `id` tinyint(3) unsigned NOT NULL,
   `imgSrc` varchar(150) NOT NULL,
@@ -281,16 +273,19 @@ CREATE TABLE `auth_log` (
 );
 insert into auth_log values(0,'登录限制',3,null,null,null),(1,'授权删除限制',3,null,null,null);
 
-CREATE TABLE `visit_log` (
+CREATE TABLE `visitor_log` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `ip` varchar(40) NOT NULL,
   `location` varchar(50) DEFAULT NULL,
+  `browser` varchar(30) DEFAULT NULL,
+  `os` varchar(30) DEFAULT NULL,
   `xtype` varchar(10) NOT NULL,
   `xid` smallint(5) unsigned NOT NULL,
-  `pv` tinyint(3) unsigned DEFAULT NULL,
-  `lastVisit` datetime DEFAULT current_timestamp(),
-  PRIMARY KEY (`ip`,`xtype`,`xid`)
+  `visitTime` datetime DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  key `iti_ind` (`ip`,`xtype`,`xid`)
 );
-
+insert into visitor_log values(null,'0.0.0.0','Internet Spider',null,null,'all',0,now());
 
 
 /*==================Dynamic====================*/

@@ -1,18 +1,29 @@
 <?php
 require 'utils/init.php';
+require 'utils/filters.php';
 require 'links/public_link.php';
 require 'utils/utils.php';
-function visit_log($ip,$xid,$xType){
+function visit_log($ip,$xid,$xType,$bro,$os){
     global $link;
     if ($ip){
-        $loc = mysqli_real_escape_string($link,get_ip_loc($ip));
-        if (preg_match('/google|ovh|Advanced/i',$loc)){
-            maria($link,"update Tmp.visit_log set pv=pv+1,lastVisit=now() where ip='0.0.0.0' limit 1");
+        $loc = get_ip_loc($ip);
+        if (preg_match('/google|ovh|Advanced|Microsoft/i',$loc)){
+            maria($link,"update Tmp.visitor_log set visitTime=now() where id=1 limit 1");
         }
         else{
-            maria($link,"insert into Tmp.visit_log values('$ip','$loc','$xType',$xid,1,default) on duplicate key update pv=pv+1,lastVisit=now()");
-            $pv = mysqli_fetch_row(maria($link,"select pv from Tmp.visit_log where ip='$ip' and xtype='$xType' and xid=$xid"))[0];
-            if ($pv<=2){
+            $ip = maria_escape($ip,$link);
+            $loc = maria_escape($loc,$link);
+            $bro = maria_escape($bro,$link);
+            $os = maria_escape($os,$link);
+            $visitedVid = maria_scalar($link,"
+            select id from Tmp.visitor_log
+            where ip=$ip and xtype='$xType' and xid=$xid and visitTime>curdate()
+            ");
+            if ($visitedVid){
+                maria($link,"update Tmp.visitor_log set browser=$bro,os=$os,visitTime=now() where id=$visitedVid limit 1");
+            }
+            else{
+                maria($link,"insert into Tmp.visitor_log values (null,$ip,$loc,$bro,$os,'$xType',$xid,now())");
                 if ($xType=='note')
                     maria($link,"update Note.note_info set readCount=readCount+1 where nid=$xid limit 1");
                 else
@@ -25,8 +36,10 @@ if (php_sapi_name()!=='cli'){
     echo json_encode(['code'=>1,'message'=>'big brother is watching you']);
     die();
 }
-$args = getopt('',['ip:','xid:','xType:']);
+$args = getopt('',['ip:','xid:','xType:','browser:','os:']);
 $ip = $args['ip'];
 $xid = $args['xid'];
 $xType = $args['xType'];
-@visit_log($ip,$xid,$xType);
+$browser = isset($args['browser'])?$args['browser']:'Unknown';
+$os = isset($args['os'])?$args['os']:'Unknown';
+@visit_log($ip,$xid,$xType,$browser,$os);

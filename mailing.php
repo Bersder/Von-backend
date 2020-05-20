@@ -22,9 +22,9 @@ function send_mail($send_configs,$send_me=false){
         $mail->SMTPDebug = 0;
         $mail->isSMTP();
         $mail->SMTPAuth = true;
-        $mail->SMTPSecure = 'STARTTLS';
+        $mail->SMTPSecure = 'ssl';//outlook: STARTTLS
 
-        $mail->Host = 'smtp.office365.com';
+        $mail->Host = 'smtp.qq.com';//outlook: smtp.office365.com
         $mail->Port = 587;
         $mail->Username = MY_MAIL;
         $mail->Password = MY_MAIL_PASSWORD;
@@ -38,7 +38,7 @@ function send_mail($send_configs,$send_me=false){
         if ($send_me){
             $mail->Subject = '你的博客收到了一则评论';
             $mail->Body = '<table>' .
-                '<tr><td style="font-size:30px;color:#5abebc;padding:0">你的博客收到了一则评论</td></tr>'.
+                '<tr><td style="font-size:25px;color:#5abebc;padding:0">你的博客收到了一则评论</td></tr>'.
                 sprintf('<tr><td style="font-size:16px"><strong>%s</strong> 在<strong>《%s》</strong>上留下了一则评论：</td></tr>',$responder,$topic_name).
                 sprintf('<tr><td style="font-size:14px;background:#eaeaea;padding:10px 20px;border-radius:5px">%s</td></tr>',$mdParser->text($rawReply)).
                 sprintf('<tr><td style="font-size:16px;padding-top:20px"><a href="%s">点击此处前往现场(编号#%d)</a></td></tr>',$topic_url,$parent_id).
@@ -48,7 +48,7 @@ function send_mail($send_configs,$send_me=false){
         else{
             $mail->Subject = '你有一条来自忍野喵的回复';
             $mail->Body = '<table>' .
-                '<tr><td style="font-size:30px;color:#5abebc;padding:0">你有一条来自忍野喵的回复</td></tr>'.
+                '<tr><td style="font-size:25px;color:#5abebc;padding:0">你有一条来自忍野喵的回复</td></tr>'.
                 sprintf('<tr><td style="font-size:16px">你在<strong>《%s》</strong>发表的评论：</td></tr>',$topic_name).
                 sprintf('<tr><td style="font-size:14px;background:#eaeaea;padding:10px 20px;border-radius:5px">%s</td></tr>',$mdParser->text($rawComment)).
                 sprintf('<tr><td style="font-size:16px;padding-top:20px">收到了来自 <strong>%s</strong> 的回复：</td></tr>',$responder).

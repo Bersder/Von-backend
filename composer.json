@@ -6,6 +6,7 @@
         "ext-openssl": "*",
         "ext-gd": "*",
         "ext-iconv": "*",
-        "erusev/parsedown": "^1.7"
+        "erusev/parsedown": "^1.7",
+        "jenssegers/agent": "^2.6"
     }
 }
